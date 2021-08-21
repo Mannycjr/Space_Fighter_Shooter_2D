@@ -18,6 +18,12 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CalculateMovement();
+
+    }
+
+    void CalculateMovement()
+    {
         float _horizontalInput = Input.GetAxis("Horizontal");
         float _verticalInput = Input.GetAxis("Vertical");
         float _verticalPositionLimit = 3.8f;
@@ -27,30 +33,17 @@ public class Player : MonoBehaviour
 
         transform.Translate(_direction * _speed * Time.deltaTime);
 
-        // if player position on the y is greater than 3.8
-        // y position = 3.8
-        // else if player position on the y is less than 3.8
-        // y position = -3.8
+        // Limit the player's vetical movement to _verticalPositionLimit
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y,-_verticalPositionLimit, _verticalPositionLimit), 0);
 
-        if (transform.position.y >= _verticalPositionLimit)
-        {
-            transform.position = new Vector3(transform.position.x, _verticalPositionLimit, 0); 
-        } else if (transform.position.y <= -_verticalPositionLimit)
-        {
-            transform.position = new Vector3(transform.position.x, -_verticalPositionLimit, 0);
-        }
-
-        // if player on the x > 11
-        // x pos = -11
-        // else if player on the x is less than -11
-        // x pos = 11
+        // Wrap the horizontal player movement within the bounds set by _horizontalPositionLimit
         if (transform.position.x >= _horizontalPositionLimit)
         {
             transform.position = new Vector3(-_horizontalPositionLimit, transform.position.y, 0);
-        } else if (transform.position.x <= -_horizontalPositionLimit)
+        }
+        else if (transform.position.x <= -_horizontalPositionLimit)
         {
             transform.position = new Vector3(_horizontalPositionLimit, transform.position.y, 0);
         }
-
     }
 }
