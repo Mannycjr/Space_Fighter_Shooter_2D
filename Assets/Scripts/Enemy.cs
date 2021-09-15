@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private int _speed = 4;
+    private float _speed = 4.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +27,8 @@ public class Enemy : MonoBehaviour
         // respawn at top with a new random x position
         if (transform.position.y <= -_verticalPositionLimit)
         {
-            _randomHorizontalPosition = Mathf.Round(Random.Range(-_horizontalPositionLimit, _horizontalPositionLimit) * 100f) * 0.01f;
+            //_randomHorizontalPosition = Mathf.Round(Random.Range(-_horizontalPositionLimit, _horizontalPositionLimit) * 100f) * 0.01f;
+            _randomHorizontalPosition = Random.Range(-_horizontalPositionLimit, _horizontalPositionLimit);
             transform.position = new Vector3(_randomHorizontalPosition, _verticalPositionLimit, 0);
         }
 
