@@ -32,7 +32,30 @@ public class Enemy : MonoBehaviour
             transform.position = new Vector3(_randomHorizontalPosition, _verticalPositionLimit, 0);
         }
 
+    }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Hit: " + other.transform.name);
+
+        // if other is Player
+        if (other.tag == "Player")
+        {
+            // Damage the player
+            other.transform.GetComponent<Player>().Damage();
+
+            // Destroy US
+            Destroy(this.gameObject);
+        }
+        
+        
+
+        // if other is Player
+        if (other.tag == "Laser")
+        {
+            Destroy(other);
+            Destroy(this.gameObject);
+        }
 
     }
 }
