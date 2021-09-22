@@ -27,7 +27,6 @@ public class Enemy : MonoBehaviour
         // respawn at top with a new random x position
         if (transform.position.y <= -_verticalPositionLimit)
         {
-            //_randomHorizontalPosition = Mathf.Round(Random.Range(-_horizontalPositionLimit, _horizontalPositionLimit) * 100f) * 0.01f;
             _randomHorizontalPosition = Random.Range(-_horizontalPositionLimit, _horizontalPositionLimit);
             transform.position = new Vector3(_randomHorizontalPosition, _verticalPositionLimit, 0);
         }
@@ -42,15 +41,16 @@ public class Enemy : MonoBehaviour
         if (other.tag == "Player")
         {
             // Damage the player
-            other.transform.GetComponent<Player>().Damage();
+            Player player = other.transform.GetComponent<Player>();
 
-            // Destroy US
+            if (player != null)
+            {
+                player.Damage();
+            }
+
             Destroy(this.gameObject);
         }
         
-        
-
-        // if other is Player
         if (other.tag == "Laser")
         {
             Destroy(other);
