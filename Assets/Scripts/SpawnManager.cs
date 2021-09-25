@@ -6,6 +6,8 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject _enemyPrefab;
+    [SerializeField]
+    private GameObject _enemyContainer;
     float _yPositionLimit = 6f;
     float _xPositionLimit = 10.0f;
     float _randomX;
@@ -24,10 +26,6 @@ public class SpawnManager : MonoBehaviour
 
 
     }
-
-    //spawn gameobjects every 5 seconds
-    // Create a coroutine of type IEnumerator -- Yield Events
-    // while loop
 
     IEnumerator spawnRoutine()
     {
