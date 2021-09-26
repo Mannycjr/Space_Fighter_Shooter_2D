@@ -13,17 +13,17 @@ public class SpawnManager : MonoBehaviour
     float _randomX;
     float _randomY;
     float _waitTime = 5.0f;
+    private bool _stopSpawning = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(spawnRoutine());        
+        StartCoroutine(spawnRoutine());
     }
 
     // Update is called once per frame
     void Update()
     {
-
 
     }
 
@@ -31,17 +31,21 @@ public class SpawnManager : MonoBehaviour
     {
 
         //while loop (infinite loop)
-        while (true)
+        while (_stopSpawning == false)
         {
             // Instantiate enemy prefab
             _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
             _randomY = Random.Range(0, _yPositionLimit);
             Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
-            Instantiate(_enemyPrefab, spawnPosition, Quaternion.identity);
-
+            GameObject newEnemy = Instantiate(_enemyPrefab, spawnPosition, Quaternion.identity);
+            newEnemy.transform.parent = _enemyContainer.transform;
             // yield wait for 5 seconds
             yield return new WaitForSeconds(_waitTime);
         }
     }
 
+    public void OnPlayerDeath()
+    {
+        _stopSpawning = true;
+    }
 }
