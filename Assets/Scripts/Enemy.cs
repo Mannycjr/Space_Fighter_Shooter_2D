@@ -5,42 +5,61 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     private float _speed = 4.0f;
+    float _verticalPositionLimit = 6f;
+    float _horizontalPositionLimit = 10.0f;
+    private SpawnManager _spawnManager; // get script SpawnManager of GameObject Spawn_Manager
+
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+
+        if (_spawnManager == null)
+        {
+            Debug.LogError("The Spawn Manager is NULL.");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        float _verticalPositionLimit = 6f;
-        float _horizontalPositionLimit = 10.0f;
-        float _randomHorizontalPosition;
-
-
         // move down 4 meters per second
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
 
-        // if bottom of screen
+        // if bottom of screen and still alive
         // respawn at top with a new random x position
         if (transform.position.y <= -_verticalPositionLimit)
         {
-            _randomHorizontalPosition = Random.Range(-_horizontalPositionLimit, _horizontalPositionLimit);
-            transform.position = new Vector3(_randomHorizontalPosition, _verticalPositionLimit, 0);
+            if (_spawnManager.get_stopSpawning() == "false")
+            {
+                moveToTopRandomXPosition();
+            } else
+            {
+                Debug.Log("Player is dead. No need this enemy.");
+                Destroy(this.gameObject);
+            }
+
         }
 
     }
 
+    private void moveToTopRandomXPosition ()
+    {
+        float _randomHorizontalPosition;
+
+        _randomHorizontalPosition = Random.Range(-_horizontalPositionLimit, _horizontalPositionLimit);
+        transform.position = new Vector3(_randomHorizontalPosition, _verticalPositionLimit, 0);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Hit: " + other.transform.name);
+        Debug.Log("Hit: " + other.transform.name + " tag: " + other.tag);
 
         // if other is Player
         if (other.tag == "Player")
         {
-            // Damage the player
+            // Get the player
             Player player = other.transform.GetComponent<Player>();
 
             if (player != null)
@@ -53,9 +72,10 @@ public class Enemy : MonoBehaviour
         
         if (other.tag == "Laser")
         {
-            Destroy(other);
+            Destroy(other.gameObject);
             Destroy(this.gameObject);
         }
 
     }
+
 }

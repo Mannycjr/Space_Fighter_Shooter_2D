@@ -48,4 +48,19 @@ public class SpawnManager : MonoBehaviour
     {
         _stopSpawning = true;
     }
+
+    public string get_stopSpawning()
+    {
+        string returnValue;
+
+        if (_stopSpawning)
+        {
+            returnValue = "true";
+        } else
+        {
+            returnValue = "false";
+        }
+
+        return returnValue;
+    }
 }
