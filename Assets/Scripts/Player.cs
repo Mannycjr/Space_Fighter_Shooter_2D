@@ -9,17 +9,23 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
+    private GameObject _tripleShotLaserPrefab;
+    [SerializeField]
     private float _fireRate = 0.2f;
     private float _canFire = -1f;
     [SerializeField]
     private float _lives = 3;
     private SpawnManager _spawnManager; // get script SpawnManager of GameObject Spawn_Manager
+    [SerializeField]
+    private bool _isTripleShotActive = false;
+    [SerializeField]
+    private float _powerupTimeLimit = 5.0f;
 
     // Start is called before the first frame update
     void Start()
     {
         // take the current position = new position
-        transform.position = new Vector3(0, 0, 0);
+        transform.position = new Vector3(0, -11.3f, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
 
         if (_spawnManager == null)
@@ -33,6 +39,7 @@ public class Player : MonoBehaviour
     {
         CalculateMovement();
 
+        // Cooldown system
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
@@ -43,7 +50,7 @@ public class Player : MonoBehaviour
     {
         float _horizontalInput = Input.GetAxis("Horizontal");
         float _verticalInput = Input.GetAxis("Vertical");
-        float _verticalPositionLimit = 3.8f;
+        float _verticalPositionLimit = 4.0f;
         float _horizontalPositionLimit = 11.30f;
 
         Vector3 _direction = new Vector3(_horizontalInput, _verticalInput, 0);
@@ -67,7 +74,17 @@ public class Player : MonoBehaviour
     void FireLaser()
     {
         _canFire = Time.time + _fireRate;
-        Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+
+        // if tripleshotActive is true
+        if (_isTripleShotActive == true)
+        {
+            Instantiate(_tripleShotLaserPrefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+        }
+
     }
 
     public void Damage()
@@ -85,5 +102,21 @@ public class Player : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    public void TripleshotActive()
+    {
+        _isTripleShotActive = true;
+        // start the powerdown coroutine for triple shot
+        StartCoroutine(TripleshotPowerDownRoutine());
+    }
+
+    IEnumerator TripleshotPowerDownRoutine()
+    {
+
+        // wait 5 seconds
+        yield return new WaitForSeconds(_powerupTimeLimit);
+        _isTripleShotActive = false;
+    }
+
 
 }
