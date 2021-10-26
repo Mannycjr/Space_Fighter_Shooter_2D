@@ -9,9 +9,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
-    private GameObject _powerupTripleShot;
-    [SerializeField]
-    private GameObject _powerupContainer;
+    private GameObject[] _powerups;
     float _yPositionLimit = 6f;
     float _xPositionLimit = 10.0f;
     float _randomX;
@@ -24,7 +22,9 @@ public class SpawnManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(spawnEnemyRoutine());
-        StartCoroutine(spawnPowerupTripleshotRoutine());
+        StartCoroutine(spawnRandomPowerupRoutine());
+        
+
     }
 
     // Update is called once per frame
@@ -50,7 +50,7 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    IEnumerator spawnPowerupTripleshotRoutine()
+    IEnumerator spawnRandomPowerupRoutine()
     {
         while (_stopSpawning == false)
         {
@@ -60,9 +60,8 @@ public class SpawnManager : MonoBehaviour
             _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
             _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);
             Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
-
-            GameObject newPowerupTripleShot = Instantiate(_powerupTripleShot, spawnPosition, Quaternion.identity);
-            newPowerupTripleShot.transform.parent = _powerupContainer.transform;
+            int randomPowerUp = Random.Range(0, 2);
+            GameObject newPowerup = Instantiate(_powerups[randomPowerUp], spawnPosition, Quaternion.identity);
 
             yield return new WaitForSeconds(_randomWaitTime);
         }
