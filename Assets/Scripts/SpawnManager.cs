@@ -9,7 +9,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
-    private GameObject[] _powerups;
+    private GameObject[] _powerups; // 0 = Tripleshot. 1 = Speed. 2 = Shields.
     float _yPositionLimit = 6f;
     float _xPositionLimit = 10.0f;
     float _randomX;

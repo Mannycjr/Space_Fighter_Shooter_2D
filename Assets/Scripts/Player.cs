@@ -131,7 +131,7 @@ public class Player : MonoBehaviour
 
     IEnumerator SpeedBoostPowerDownRoutine()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(_powerupTimeLimit);
         _isSpeedBoostActive = false;
         _speed = _speed / _speedMultiplier;
     }
