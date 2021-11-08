@@ -23,7 +23,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _isSpeedBoostActive = false;
     [SerializeField]
+    private bool _isShieldsActive = false;
+    [SerializeField]
     private float _powerupTimeLimit = 5.0f;
+
+
+
+    [SerializeField]
+    private GameObject _shieldVisualizer;
 
     // Start is called before the first frame update
     void Start()
@@ -93,6 +100,18 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
+        // if shields is active
+
+        // do nothing ...
+        // deactivate shields
+        // return;
+        if (_isShieldsActive)
+        {
+            _isShieldsActive = false;
+            _shieldVisualizer.SetActive(false);
+            return;
+        }
+
         _lives--;
 
         if (_lives < 1)
@@ -136,5 +155,10 @@ public class Player : MonoBehaviour
         _speed = _speed / _speedMultiplier;
     }
 
+    public void ShieldsActive()
+    {
+        _isShieldsActive = true;
+        _shieldVisualizer.SetActive(true);
+    }
 
 }
