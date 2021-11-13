@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
     float _verticalPositionLimit = 6f;
     float _horizontalPositionLimit = 10.0f;
     private SpawnManager _spawnManager; // get script SpawnManager of GameObject Spawn_Manager
-
+    private Player _player; 
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +19,9 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("The Spawn Manager is NULL.");
         }
+
+        _player = GameObject.Find("Player").GetComponent<Player>();
+
     }
 
     // Update is called once per frame
@@ -73,6 +76,12 @@ public class Enemy : MonoBehaviour
         if (other.tag == "Laser")
         {
             Destroy(other.gameObject);
+            
+            if(_player != null)
+            {
+                _player.ScoreUpdate(10);
+            }
+
             Destroy(this.gameObject);
         }
 

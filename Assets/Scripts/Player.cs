@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     private float _fireRate = 0.2f;
     private float _canFire = -1f;
     [SerializeField]
-    private float _lives = 3;
+    private int _lives = 3;
     private SpawnManager _spawnManager; // get script SpawnManager of GameObject Spawn_Manager
     [SerializeField]
     private bool _isTripleShotActive = false;
@@ -27,10 +27,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _powerupTimeLimit = 5.0f;
 
-
-
     [SerializeField]
     private GameObject _shieldVisualizer;
+
+    [SerializeField]
+    private int _score;
+
+    private UIManager _uiManagerScript;
+
 
     // Start is called before the first frame update
     void Start()
@@ -38,10 +42,17 @@ public class Player : MonoBehaviour
         // take the current position = new position
         transform.position = new Vector3(0, -11.3f, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _uiManagerScript = GameObject.Find("Canvas").GetComponent<UIManager>();
+
 
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL.");
+        }
+
+        if (_uiManagerScript == null)
+        {
+            Debug.LogError("The UI Manager is NULL.");
         }
     }
 
@@ -100,11 +111,6 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        // if shields is active
-
-        // do nothing ...
-        // deactivate shields
-        // return;
         if (_isShieldsActive)
         {
             _isShieldsActive = false;
@@ -113,14 +119,13 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
+        _uiManagerScript.UpdateLives(_lives);
 
         if (_lives < 1)
         {
             // Communicate with Spawn Manager
             // Let them know to stop spawning
             _spawnManager.OnPlayerDeath();
-
-            
 
             Destroy(this.gameObject);
         }
@@ -160,5 +165,13 @@ public class Player : MonoBehaviour
         _isShieldsActive = true;
         _shieldVisualizer.SetActive(true);
     }
+
+    // method to add 10 to the score
+    public void ScoreUpdate(int points)
+    {
+        _score += points;
+        _uiManagerScript.UpdateScore(_score);
+    }
+    // communicate to the UI to update the score
 
 }
