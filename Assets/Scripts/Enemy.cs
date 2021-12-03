@@ -22,6 +22,10 @@ public class Enemy : MonoBehaviour
 
         _player = GameObject.Find("Player").GetComponent<Player>();
 
+        if (_player == null)
+        {
+            Debug.LogError("Enemy::Start() Called. The Player is NULL.");
+        }
     }
 
     // Update is called once per frame

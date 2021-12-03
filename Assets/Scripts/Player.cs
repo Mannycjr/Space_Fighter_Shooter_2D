@@ -170,8 +170,8 @@ public class Player : MonoBehaviour
     public void ScoreUpdate(int points)
     {
         _score += points;
-        _uiManagerScript.UpdateScore(_score);
+        _uiManagerScript.UpdateScore(_score); // communicate to the UI to update the score
     }
-    // communicate to the UI to update the score
+    
 
 }
