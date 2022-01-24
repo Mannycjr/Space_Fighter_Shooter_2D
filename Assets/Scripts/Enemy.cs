@@ -8,7 +8,11 @@ public class Enemy : MonoBehaviour
     float _verticalPositionLimit = 6f;
     float _horizontalPositionLimit = 10.0f;
     private SpawnManager _spawnManager; // get script SpawnManager of GameObject Spawn_Manager
-    private Player _player; 
+    private Player _player;
+
+    // Make handle to animator component
+    private Animator _explosionAnimation;
+    private float _explosionAnimLength = 2.6f;
 
     // Start is called before the first frame update
     void Start()
@@ -21,11 +25,18 @@ public class Enemy : MonoBehaviour
         }
 
         _player = GameObject.Find("Player").GetComponent<Player>();
-
         if (_player == null)
         {
             Debug.LogError("Enemy::Start() Called. The Player is NULL.");
         }
+
+        // assign the animator component
+        _explosionAnimation = GetComponent<Animator>();
+        if (_explosionAnimation == null)
+        {
+            Debug.LogError("Enemy::Start() Called. The enemy explosion anim controller is NULL.");
+        }
+
     }
 
     // Update is called once per frame
@@ -73,8 +84,11 @@ public class Enemy : MonoBehaviour
             {
                 player.Damage();
             }
+            // trigger anim
+            _explosionAnimation.SetTrigger("OnEnemyDeath");
+            _speed = 0;
 
-            Destroy(this.gameObject);
+            Destroy(this.gameObject, _explosionAnimLength);
         }
         
         if (other.tag == "Laser")
@@ -85,8 +99,11 @@ public class Enemy : MonoBehaviour
             {
                 _player.ScoreUpdate(10);
             }
+            // trigger anim
+            _explosionAnimation.SetTrigger("OnEnemyDeath");
+            _speed = 0;
 
-            Destroy(this.gameObject);
+            Destroy(this.gameObject, _explosionAnimLength);
         }
 
     }
