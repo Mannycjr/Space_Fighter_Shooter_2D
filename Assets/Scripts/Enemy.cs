@@ -14,6 +14,8 @@ public class Enemy : MonoBehaviour
     private Animator _explosionAnimation;
     private float _explosionAnimLength = 2.6f;
 
+    private BoxCollider2D _boxCollider;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +39,11 @@ public class Enemy : MonoBehaviour
             Debug.LogError("Enemy::Start() Called. The enemy explosion anim controller is NULL.");
         }
 
+        _boxCollider = GetComponent<BoxCollider2D>();
+        if (_boxCollider == null)
+        {
+            Debug.LogError("Enemy::Start() Called. The enemy Box Collider 2D is NULL.");
+        }
     }
 
     // Update is called once per frame
@@ -84,11 +91,7 @@ public class Enemy : MonoBehaviour
             {
                 player.Damage();
             }
-            // trigger anim
-            _explosionAnimation.SetTrigger("OnEnemyDeath");
-            _speed = 0;
 
-            Destroy(this.gameObject, _explosionAnimLength);
         }
         
         if (other.tag == "Laser")
@@ -99,12 +102,14 @@ public class Enemy : MonoBehaviour
             {
                 _player.ScoreUpdate(10);
             }
-            // trigger anim
-            _explosionAnimation.SetTrigger("OnEnemyDeath");
-            _speed = 0;
-
-            Destroy(this.gameObject, _explosionAnimLength);
         }
+
+        // trigger anim
+        _explosionAnimation.SetTrigger("OnEnemyDeath");
+        _boxCollider.enabled = false;
+        _speed = 0;
+
+        Destroy(this.gameObject, _explosionAnimLength);
 
     }
 

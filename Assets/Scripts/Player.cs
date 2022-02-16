@@ -38,6 +38,10 @@ public class Player : MonoBehaviour
 
     private UIManager _uiManagerScript;
 
+    [SerializeField]
+    private AudioClip _sfxClipLaser;
+ 
+    private AudioSource _sfxLaser;
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +50,7 @@ public class Player : MonoBehaviour
         transform.position = new Vector3(0, -11.3f, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManagerScript = GameObject.Find("Canvas").GetComponent<UIManager>();
-
+        _sfxLaser = GetComponent<AudioSource>();
 
         if (_spawnManager == null)
         {
@@ -56,6 +60,14 @@ public class Player : MonoBehaviour
         if (_uiManagerScript == null)
         {
             Debug.LogError("The UI Manager is NULL.");
+        }
+
+        if (_sfxLaser == null)
+        {
+            Debug.LogError("_sfxLaser is NULL.");
+        } else
+        {
+            _sfxLaser.clip = _sfxClipLaser;
         }
     }
 
@@ -110,6 +122,8 @@ public class Player : MonoBehaviour
             Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
         }
 
+        // Play Laser SFX
+        _sfxLaser.Play(0);  
     }
 
     public void Damage()

@@ -54,9 +54,9 @@ public class Asteroid : MonoBehaviour
         //GameObject _newExplosion = 
         Instantiate(_explosionPrefab, this.transform.position, Quaternion.identity);
 
-        // destroy asteroid and then explosion after 3 seconds
-        Destroy(this.gameObject, 0.1f);
-        //Destroy(_newExplosion, 3.0f);
+        // destroy asteroid. Explosions self-destruct automatically after about 3 seconds
+        Destroy(this.gameObject, 0.0f);
+        //
     }
 
 
