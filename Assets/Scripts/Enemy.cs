@@ -16,6 +16,10 @@ public class Enemy : MonoBehaviour
 
     private BoxCollider2D _boxCollider;
 
+    [SerializeField]
+    private AudioClip _sfxClipExplosion;
+    private AudioSource _sfxExplosion;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +47,16 @@ public class Enemy : MonoBehaviour
         if (_boxCollider == null)
         {
             Debug.LogError("Enemy::Start() Called. The enemy Box Collider 2D is NULL.");
+        }
+
+        _sfxExplosion = GetComponent<AudioSource>();
+        if (_sfxExplosion == null)
+        {
+            Debug.LogError("_sfxExplosion is NULL.");
+        }
+        else
+        {
+            _sfxExplosion.clip = _sfxClipExplosion;
         }
     }
 
@@ -108,6 +122,7 @@ public class Enemy : MonoBehaviour
         _explosionAnimation.SetTrigger("OnEnemyDeath");
         _boxCollider.enabled = false;
         _speed = 0;
+        _sfxExplosion.Play(0);
 
         Destroy(this.gameObject, _explosionAnimLength);
 

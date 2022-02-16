@@ -115,6 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca82a90931c2044c8530a51f54d20e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _sfxClipExplosion: {fileID: 8300000, guid: 5ee07e8c660cefd44ada013e9232f499, type: 3}
 --- !u!82 &5001352045493777036
 AudioSource:
   m_ObjectHideFlags: 0
@@ -126,7 +127,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
