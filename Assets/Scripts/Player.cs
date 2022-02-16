@@ -40,8 +40,10 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private AudioClip _sfxClipLaser;
- 
-    private AudioSource _sfxLaser;
+    [SerializeField]
+    private AudioClip _sfxClipExplosion;
+
+    private AudioSource _sfxAudioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -50,7 +52,7 @@ public class Player : MonoBehaviour
         transform.position = new Vector3(0, -11.3f, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManagerScript = GameObject.Find("Canvas").GetComponent<UIManager>();
-        _sfxLaser = GetComponent<AudioSource>();
+        _sfxAudioSource = GetComponent<AudioSource>();
 
         if (_spawnManager == null)
         {
@@ -62,12 +64,12 @@ public class Player : MonoBehaviour
             Debug.LogError("The UI Manager is NULL.");
         }
 
-        if (_sfxLaser == null)
+        if (_sfxAudioSource == null)
         {
-            Debug.LogError("_sfxLaser is NULL.");
+            Debug.LogError("_sfxAudioSource is NULL.");
         } else
         {
-            _sfxLaser.clip = _sfxClipLaser;
+            _sfxAudioSource.clip = _sfxClipLaser;
         }
     }
 
@@ -123,7 +125,7 @@ public class Player : MonoBehaviour
         }
 
         // Play Laser SFX
-        _sfxLaser.Play(0);  
+        _sfxAudioSource.Play(0);  
     }
 
     public void Damage()
@@ -153,6 +155,9 @@ public class Player : MonoBehaviour
             // Communicate with Spawn Manager
             // Let them know to stop spawning
             _spawnManager.OnPlayerDeath();
+
+            _sfxAudioSource.clip = _sfxClipExplosion;
+            _sfxAudioSource.Play(0);
 
             Destroy(this.gameObject);
         }

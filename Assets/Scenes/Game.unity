@@ -517,7 +517,8 @@ MonoBehaviour:
   _damageEngineLeft: {fileID: 1876896701}
   _damageEngineRight: {fileID: 152653171}
   _score: 0
-  _sfxClipLaser: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
+  _sfxClipLaser: {fileID: 8300000, guid: 805a5405f3a58e8409e8edd746fed8f2, type: 3}
+  _sfxClipExplosion: {fileID: 8300000, guid: 5ee07e8c660cefd44ada013e9232f499, type: 3}
 --- !u!212 &208557279
 SpriteRenderer:
   m_ObjectHideFlags: 0
