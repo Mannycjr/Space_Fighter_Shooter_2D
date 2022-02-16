@@ -105,7 +105,7 @@ public class Enemy : MonoBehaviour
             {
                 player.Damage();
             }
-
+            DestroyEnemy();
         }
         
         if (other.tag == "Laser")
@@ -116,8 +116,13 @@ public class Enemy : MonoBehaviour
             {
                 _player.ScoreUpdate(10);
             }
+            DestroyEnemy();
         }
 
+    }
+
+    private void DestroyEnemy()
+    {
         // trigger anim
         _explosionAnimation.SetTrigger("OnEnemyDeath");
         _boxCollider.enabled = false;
@@ -125,7 +130,5 @@ public class Enemy : MonoBehaviour
         _sfxExplosion.Play(0);
 
         Destroy(this.gameObject, _explosionAnimLength);
-
     }
-
 }
