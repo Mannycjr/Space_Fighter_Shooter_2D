@@ -10,9 +10,12 @@ public class Powerup : MonoBehaviour
     private SpawnManager _spawnManager_Powerups; // get script SpawnManager of GameObject Spawn_Manager
     [SerializeField] // 0 = Triple Shot; 1 = Speed; 2 = Shields
     private int _powerupID;
-    private AudioSource _sfxPowerup;
-    private Renderer _rend;
 
+    [SerializeField]
+    private AudioClip _sfxClipPowerup;
+    //private Renderer _rend;
+
+    /*
     void Start()
     {
         _sfxPowerup = GetComponent<AudioSource>();
@@ -27,6 +30,7 @@ public class Powerup : MonoBehaviour
             Debug.LogError("Powerup::Start() Called. _rend is NULL.");
         }
     }
+    */
     
     // Update is called once per frame
     void Update()
@@ -45,8 +49,9 @@ public class Powerup : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            _sfxPowerup.Play(0);
-
+            //_sfxPowerup.Play(0);
+            AudioSource.PlayClipAtPoint(_sfxClipPowerup, new Vector3(0,0,-9));
+            
             // Get the player and assign to a handle
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
@@ -71,8 +76,9 @@ public class Powerup : MonoBehaviour
                 
             }
             // turn off visibility
-            _rend.enabled = false;
-            Destroy(this.gameObject,0.8f);
+            //_rend.enabled = false;
+
+            Destroy(this.gameObject);
         }
     }
 
