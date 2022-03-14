@@ -125,7 +125,7 @@ public class Enemy : MonoBehaviour
     {
         // trigger anim
         _explosionAnimation.SetTrigger("OnEnemyDeath");
-        _boxCollider.enabled = false;
+        _boxCollider.enabled = false; //Prevent more damage 
         _speed = 0;
         _sfxExplosion.Play(0);
 

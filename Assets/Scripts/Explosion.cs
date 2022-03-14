@@ -14,7 +14,7 @@ public class Explosion : MonoBehaviour
         _sfxExplosion = GetComponent<AudioSource>();
         if (_sfxExplosion == null)
         {
-            Debug.LogError("_sfxExplosion is NULL.");
+            Debug.LogError("Explosion::Start() Called. _sfxExplosion is NULL.");
         }
         else
         {

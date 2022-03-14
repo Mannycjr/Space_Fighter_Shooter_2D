@@ -56,17 +56,17 @@ public class Player : MonoBehaviour
 
         if (_spawnManager == null)
         {
-            Debug.LogError("The Spawn Manager is NULL.");
+            Debug.LogError("Player::Start() Called. The Spawn Manager is NULL.");
         }
 
         if (_uiManagerScript == null)
         {
-            Debug.LogError("The UI Manager is NULL.");
+            Debug.LogError("Player::Start() Called. The UI Manager is NULL.");
         }
 
         if (_sfxAudioSource == null)
         {
-            Debug.LogError("_sfxAudioSource is NULL.");
+            Debug.LogError("Player::Start() Called. _sfxAudioSource is NULL.");
         } else
         {
             _sfxAudioSource.clip = _sfxClipLaser;
