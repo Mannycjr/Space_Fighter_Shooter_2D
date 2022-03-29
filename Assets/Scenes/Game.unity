@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -519,6 +519,8 @@ MonoBehaviour:
   _score: 0
   _sfxClipLaser: {fileID: 8300000, guid: 805a5405f3a58e8409e8edd746fed8f2, type: 3}
   _sfxClipExplosion: {fileID: 8300000, guid: 5ee07e8c660cefd44ada013e9232f499, type: 3}
+  _explosionPrefab: {fileID: 2120101906882405735, guid: d52f40f04b8ba7c4599826ef7a3d66fe,
+    type: 3}
 --- !u!212 &208557279
 SpriteRenderer:
   m_ObjectHideFlags: 0

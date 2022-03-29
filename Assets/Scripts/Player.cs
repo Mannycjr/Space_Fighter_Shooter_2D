@@ -45,6 +45,9 @@ public class Player : MonoBehaviour
 
     private AudioSource _sfxAudioSource;
 
+    [SerializeField]
+    private GameObject _explosionPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -152,13 +155,14 @@ public class Player : MonoBehaviour
 
         if (_lives < 1)
         {
+            playExplosionAnim();
             // Communicate with Spawn Manager
             // Let them know to stop spawning
             _spawnManager.OnPlayerDeath();
 
             _sfxAudioSource.clip = _sfxClipExplosion;
             _sfxAudioSource.Play(0);
-
+            
             Destroy(this.gameObject);
         }
     }
@@ -205,5 +209,9 @@ public class Player : MonoBehaviour
         _uiManagerScript.UpdateScore(_score); // communicate to the UI to update the score
     }
     
+    public void playExplosionAnim()
+    {
+        Instantiate(_explosionPrefab, this.transform.position, Quaternion.identity);
+    }
 
 }
