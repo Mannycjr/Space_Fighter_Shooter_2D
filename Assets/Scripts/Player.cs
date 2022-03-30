@@ -5,9 +5,12 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 5.0f;
+    private float _defaultSpeed = 5.0f;
     [SerializeField]
-    private float _speedMultiplier = 2.0f;
+    private float _shiftSpeedIncrease = 2.5f;
+    private float _speed;
+    [SerializeField]
+    private float _speedMultiplier = 4.0f;
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
@@ -51,6 +54,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _speed = _defaultSpeed;
+
         // take the current position = new position
         transform.position = new Vector3(0, -11.3f, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
@@ -79,6 +84,18 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // if Left Shift key is pressed, increase _speed
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _speed = _defaultSpeed + _shiftSpeedIncrease;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _speed = _defaultSpeed;
+        }
+
+        // when Left Shift key is released, return _speed back to normal
+
         CalculateMovement();
 
         // Cooldown system
@@ -141,6 +158,7 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
+        _uiManagerScript.UpdateLives(_lives);
 
         if (_lives == 2)
         {
@@ -150,8 +168,6 @@ public class Player : MonoBehaviour
         {
             _damageEngineRight.SetActive(true);
         }
-
-        _uiManagerScript.UpdateLives(_lives);
 
         if (_lives < 1)
         {
