@@ -84,7 +84,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Thrusters
+        // Thrusters: 
+        // ● Move the player at an increased rate when the ‘Left Shift’ key is pressed down 
+        // ● Reset back to normal speed when the ‘Left Shift’ key is released
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             _speed = _defaultSpeed + _shiftSpeedIncrease;
