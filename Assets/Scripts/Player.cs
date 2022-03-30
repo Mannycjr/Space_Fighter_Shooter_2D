@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // if Left Shift key is pressed, increase _speed
+        // Thrusters
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             _speed = _defaultSpeed + _shiftSpeedIncrease;
@@ -93,8 +93,6 @@ public class Player : MonoBehaviour
         {
             _speed = _defaultSpeed;
         }
-
-        // when Left Shift key is released, return _speed back to normal
 
         CalculateMovement();
 
