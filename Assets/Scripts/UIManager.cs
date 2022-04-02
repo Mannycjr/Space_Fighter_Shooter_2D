@@ -17,6 +17,10 @@ public class UIManager : MonoBehaviour
     private float _textFlickerDelay = 0.25f;
     [SerializeField]
     private Text _RestartText;
+    [SerializeField]
+    private GameObject _shieldsStrength;
+    [SerializeField]
+    private GameObject[] shieldsStrengthIcons;
 
     private GameManager _gameManager;
 
@@ -47,6 +51,29 @@ public class UIManager : MonoBehaviour
         else if (currentLives < 1)
         {
             GameOverSequence();
+        }
+    }
+
+    public void UpdateShieldsStrength(int currentShieldStrength)
+    {
+        switch (currentShieldStrength)
+        {
+            case 3:
+                _shieldsStrength.SetActive(true);
+                for (int i = 0; i < shieldsStrengthIcons.Length; i++)
+                {
+                    shieldsStrengthIcons[i].SetActive(true);
+                }
+                break;
+            case 2:
+                shieldsStrengthIcons[2].SetActive(false);
+                break;
+            case 1:
+                shieldsStrengthIcons[1].SetActive(false);
+                break;
+            default:
+                _shieldsStrength.SetActive(false);
+                break;
         }
     }
 

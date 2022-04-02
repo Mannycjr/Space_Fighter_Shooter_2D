@@ -51,6 +51,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _explosionPrefab;
 
+    [SerializeField]
+    private int _shieldStrength = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -152,8 +155,18 @@ public class Player : MonoBehaviour
     {
         if (_isShieldsActive)
         {
-            _isShieldsActive = false;
-            _shieldVisualizer.SetActive(false);
+            if (_shieldStrength >= 1)
+            {
+                --_shieldStrength;
+                Debug.Log("shieldStrength="+ _shieldStrength);
+            }
+            else if (_shieldStrength < 1)
+            {
+                _isShieldsActive = false;
+                _shieldVisualizer.SetActive(false);
+            }
+
+            _uiManagerScript.UpdateShieldsStrength(_shieldStrength);
             return;
         }
 
@@ -216,6 +229,10 @@ public class Player : MonoBehaviour
     {
         _isShieldsActive = true;
         _shieldVisualizer.SetActive(true);
+        _shieldStrength = 3;
+        Debug.Log("shieldStrength=" + _shieldStrength);
+        _uiManagerScript.UpdateShieldsStrength(_shieldStrength);
+        
     }
 
     // method to add 10 to the score
