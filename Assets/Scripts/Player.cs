@@ -160,7 +160,8 @@ public class Player : MonoBehaviour
                 --_shieldStrength;
                 Debug.Log("shieldStrength="+ _shieldStrength);
             }
-            else if (_shieldStrength < 1)
+
+            if (_shieldStrength < 1)
             {
                 _isShieldsActive = false;
                 _shieldVisualizer.SetActive(false);
