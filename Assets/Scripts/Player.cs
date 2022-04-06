@@ -54,6 +54,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _shieldStrength = 0;
 
+    [SerializeField]
+    private int _ammoCount = 15; //Feature: Ammo Count
+
     // Start is called before the first frame update
     void Start()
     {
@@ -82,12 +85,14 @@ public class Player : MonoBehaviour
         {
             _sfxAudioSource.clip = _sfxClipLaser;
         }
+
+        _uiManagerScript.UpdateAmmo(_ammoCount);
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Thrusters: 
+        // Feature: Thrusters
         // ● Move the player at an increased rate when the ‘Left Shift’ key is pressed down 
         // ● Reset back to normal speed when the ‘Left Shift’ key is released
         if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -137,22 +142,35 @@ public class Player : MonoBehaviour
     {
         _canFire = Time.time + _fireRate;
 
-        // if tripleshotActive is true
-        if (_isTripleShotActive == true)
-        {
-            Instantiate(_tripleShotLaserPrefab, transform.position, Quaternion.identity);
-        }
-        else
-        {
-            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+        // Feature: Ammo Count
+        if (_ammoCount > 0 )
+         {
+            // if tripleshotActive is true
+            if (_isTripleShotActive == true)
+            {
+                Instantiate(_tripleShotLaserPrefab, transform.position, Quaternion.identity);
+                
+            }
+            else
+            {
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+                
+            }
+
+            _ammoCount--;
+            _uiManagerScript.UpdateAmmo(_ammoCount);
+            Debug.Log("_ammoCount=" + _ammoCount);
+            // Play Laser SFX
+            _sfxAudioSource.Play(0);
+
         }
 
-        // Play Laser SFX
-        _sfxAudioSource.Play(0);  
     }
 
     public void Damage()
     {
+        // Feature: Shield Strength
+        // ● Allow for 3 hits on the shield to accommodate visualization
         if (_isShieldsActive)
         {
             if (_shieldStrength >= 1)
@@ -234,6 +252,13 @@ public class Player : MonoBehaviour
         Debug.Log("shieldStrength=" + _shieldStrength);
         _uiManagerScript.UpdateShieldsStrength(_shieldStrength);
         
+    }
+
+    // Feature: Ammo Collectable: Create a powerup that refills the ammo count allowing the player to fire again
+    public void RefillAmmo()
+    {
+        _ammoCount = 15;
+        _uiManagerScript.UpdateAmmo(_ammoCount);
     }
 
     // method to add 10 to the score

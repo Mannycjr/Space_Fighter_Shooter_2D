@@ -9,7 +9,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
-    private GameObject[] _powerups; // 0 = Tripleshot. 1 = Speed. 2 = Shields.
+    private GameObject[] _powerups; // 0 = Tripleshot. 1 = Speed. 2 = Shields. 3 = Ammo. // Feature Ammo Collectable.
     float _yPositionLimit = 6f;
     float _xPositionLimit = 10.0f;
     float _randomX;
@@ -55,7 +55,7 @@ public class SpawnManager : MonoBehaviour
         while (_stopSpawning == false)
         {
             // Every 3-7 seconds spawn in a powerup
-            _randomWaitTime = Random.Range(3.0f, 7.0f);
+            _randomWaitTime = Random.Range(2.0f, 5.0f);
 
             _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
             _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);

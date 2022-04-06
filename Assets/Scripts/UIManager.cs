@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Text _scoreText;
     [SerializeField]
+    private Text _ammoText;
+    [SerializeField]
     private Image _LivesImg;
     [SerializeField]
     private Sprite[] _livesSprites;
@@ -42,6 +44,13 @@ public class UIManager : MonoBehaviour
         _scoreText.text = "Score: " + playerScore.ToString();
     }
 
+    // Update ammo display
+    // Feature: Ammo Count
+    public void UpdateAmmo(int playerAmmo)
+    {
+        _ammoText.text = "Ammo: " + playerAmmo.ToString();
+    }
+
     public void UpdateLives(int currentLives)
     {
         if (currentLives >= 1)
@@ -54,6 +63,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // Feature: Shield Strength
+    // ● Visualize the strength of the shield.This can be done through UI on screen or color changing of the shield.
+    // ● Allow for 3 hits on the shield to accommodate visualization
     public void UpdateShieldsStrength(int currentShieldStrength)
     {
         switch (currentShieldStrength)

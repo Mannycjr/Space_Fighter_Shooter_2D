@@ -8,7 +8,7 @@ public class Powerup : MonoBehaviour
     private float _speed = 3.0f;
     float _verticalPositionLimit = 6f;
     private SpawnManager _spawnManager_Powerups; // get script SpawnManager of GameObject Spawn_Manager
-    [SerializeField] // 0 = Triple Shot; 1 = Speed; 2 = Shields
+    [SerializeField] // 0 = Triple Shot; 1 = Speed; 2 = Shields; 3 = Ammo;
     private int _powerupID;
 
     [SerializeField]
@@ -68,6 +68,10 @@ public class Powerup : MonoBehaviour
                     case 2:
                         Debug.Log("Shields powerup");
                         player.ShieldsActive();
+                        break;
+                    case 3:
+                        Debug.Log("Ammo powerup");
+                        player.RefillAmmo();
                         break;
                     default:
                         Debug.Log("Default powerup");
