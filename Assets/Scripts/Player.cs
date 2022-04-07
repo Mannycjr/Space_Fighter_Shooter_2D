@@ -97,11 +97,11 @@ public class Player : MonoBehaviour
         // ● Reset back to normal speed when the ‘Left Shift’ key is released
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            _speed = _defaultSpeed + _shiftSpeedIncrease;
+            _speed = _speed + _shiftSpeedIncrease;
         }
         else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            _speed = _defaultSpeed;
+            _speed = _speed - _shiftSpeedIncrease;
         }
 
         CalculateMovement();
@@ -189,16 +189,11 @@ public class Player : MonoBehaviour
             return;
         }
 
-        _lives--;
-        _uiManagerScript.UpdateLives(_lives);
-
-        if (_lives == 2)
+        if (_lives > 0)
         {
-            _damageEngineLeft.SetActive(true);
-        }
-        else if (_lives == 1)
-        {
-            _damageEngineRight.SetActive(true);
+            _lives--;
+            _uiManagerScript.UpdateLives(_lives);
+            UpdateDamage();
         }
 
         if (_lives < 1)
@@ -267,7 +262,37 @@ public class Player : MonoBehaviour
         _score += points;
         _uiManagerScript.UpdateScore(_score); // communicate to the UI to update the score
     }
-    
+
+    // Feature: Health Collectable: Create a health collectable that heals the player by 1. Update the visuals of the Player to reflect this.
+    public void AddLife()
+    {
+        if (_lives < 3)
+        {
+            _lives++;
+            _uiManagerScript.UpdateLives(_lives);
+            UpdateDamage();
+        }
+    }
+
+    private void UpdateDamage()
+    {
+        switch (_lives)
+        {
+            case 3:
+                _damageEngineRight.SetActive(false);
+                _damageEngineLeft.SetActive(false);
+                break;
+            case 2:
+                _damageEngineRight.SetActive(false);
+                _damageEngineLeft.SetActive(true);
+                break;
+            case 1:
+                _damageEngineRight.SetActive(true);
+                _damageEngineLeft.SetActive(true);
+                break;
+        }
+    }
+
     public void playExplosionAnim()
     {
         Instantiate(_explosionPrefab, this.transform.position, Quaternion.identity);
