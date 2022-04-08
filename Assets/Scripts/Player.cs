@@ -167,6 +167,11 @@ public class Player : MonoBehaviour
 
     }
 
+    private void FireWideShot()
+    {
+
+    }
+
     public void Damage()
     {
         // Feature: Shield Strength

@@ -26,6 +26,7 @@ public class Laser : MonoBehaviour
     void MoveUp()
     {
         transform.Translate(Vector3.up * _speed * Time.deltaTime);
+        //transform.Translate(Vector3.Angle);
 
         if (transform.position.y > _position_limit)
         {
