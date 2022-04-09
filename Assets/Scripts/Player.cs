@@ -28,7 +28,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _isShieldsActive = false;
     [SerializeField]
+    private bool _isWideShotActive = false;
+    [SerializeField]
     private float _powerupTimeLimit = 5.0f;
+
 
     [SerializeField]
     private GameObject _shieldVisualizer;
@@ -146,15 +149,24 @@ public class Player : MonoBehaviour
         if (_ammoCount > 0 )
          {
             // if tripleshotActive is true
-            if (_isTripleShotActive == true)
+            if (_isTripleShotActive == true && _isWideShotActive == false)
             {
                 Instantiate(_tripleShotLaserPrefab, transform.position, Quaternion.identity);
                 
+            } 
+            else if (_isTripleShotActive == false && _isWideShotActive == true)
+            {
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.Euler(0, 0, 45f));
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.Euler(0, 0, 90f));
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.Euler(0, 0, -45f));
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.Euler(0, 0, -90f));
             }
             else
             {
                 Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
-                
+                _isTripleShotActive = false;
+                _isWideShotActive = false;
             }
 
             _ammoCount--;
@@ -164,11 +176,6 @@ public class Player : MonoBehaviour
             _sfxAudioSource.Play(0);
 
         }
-
-    }
-
-    private void FireWideShot()
-    {
 
     }
 
@@ -218,16 +225,31 @@ public class Player : MonoBehaviour
     public void TripleshotActive()
     {
         _isTripleShotActive = true;
+        _isWideShotActive = false;
         // start the powerdown coroutine for triple shot
         StartCoroutine(TripleshotPowerDownRoutine());
     }
 
     IEnumerator TripleshotPowerDownRoutine()
     {
-
         // wait 5 seconds
         yield return new WaitForSeconds(_powerupTimeLimit);
         _isTripleShotActive = false;
+    }
+
+    public void WideShotActive()
+    {
+        _isTripleShotActive = false;
+        _isWideShotActive = true;
+        // start the powerdown coroutine for triple shot
+        StartCoroutine(WideShotPowerDownRoutine());
+    }
+
+    IEnumerator WideShotPowerDownRoutine()
+    {
+        // wait 5 seconds
+        yield return new WaitForSeconds(_powerupTimeLimit);
+        _isWideShotActive = false;
     }
 
     public void SpeedBoostActive()
