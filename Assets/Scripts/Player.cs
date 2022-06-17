@@ -31,6 +31,17 @@ public class Player : MonoBehaviour
     private bool _isWideShotActive = false;
     [SerializeField]
     private float _powerupTimeLimit = 5.0f;
+    [SerializeField]
+    private float _thrusterChargeLevelMax = 5.0f;
+    [SerializeField]
+    private float _thrusterChargeLevel;
+    [SerializeField]
+    private float _changeThrusterChargeBy = 0.5f; // per second while using up thrusters or while waiting for 
+
+    [SerializeField]
+    private bool _canUseThrusters = true; // changes to false when _thrusterChargeLevel reaches 0.0f or less. changes to true when _thrusterChargeLevel reaches 5.0f after empty.
+    [SerializeField]
+    private bool _thrustersInUse = false; //
 
 
     [SerializeField]
@@ -64,6 +75,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         _speed = _defaultSpeed;
+       _thrusterChargeLevel = _thrusterChargeLevelMax;
 
         // take the current position = new position
         transform.position = new Vector3(0, -11.3f, 0);
@@ -97,14 +109,41 @@ public class Player : MonoBehaviour
     {
         // Feature: Thrusters
         // ● Move the player at an increased rate when the ‘Left Shift’ key is pressed down 
-        // ● Reset back to normal speed when the ‘Left Shift’ key is released
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        //    ● Reduce thrusters charge UI by _changeThrusterChargeBy per second
+        // ● Reset back to normal speed when 
+        //    ● the ‘Left Shift’ key is released
+        //    ● or when thrusters charge is depleted
+        // ● If thrusters charge is depleted,
+        //    ● Reset back to normal speed
+        //    ● If _thrusterChargeLevel < _thrusterChargeLevelMax
+        //    ● Add _changeThrusterChargeBy to _thrusterChargeLevel
+
+        // Check charge level. Set _canUseThrusters depending on _thrusterChargeLevel
+        if (_thrusterChargeLevel <= 0.0f)
+        {
+            _canUseThrusters = false;
+        }
+        else if (_thrusterChargeLevel > 0.0f)
+        {
+            _canUseThrusters = true;
+        }
+
+        // 
+        if (Input.GetKeyDown(KeyCode.LeftShift) && _canUseThrusters)
         {
             _speed = _speed + _shiftSpeedIncrease;
+            _thrustersInUse = true;
+            ThrustersActive();
+
         }
         else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             _speed = _speed - _shiftSpeedIncrease;
+            _thrustersInUse = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftShift) && !_canUseThrusters)
+        {
+
         }
 
         CalculateMovement();
@@ -116,6 +155,42 @@ public class Player : MonoBehaviour
         }
     }
 
+    // 
+    void ThrustersActive()
+    {
+        // _canFire = Time.time + _fireRate;
+        // _canUseThrusters = 
+        // if (_canUseThrusters = true)
+        _canUseThrusters = true;
+
+        StartCoroutine(ThrustersPowerDownRoutine());
+    }
+
+    IEnumerator ThrustersPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(_powerupTimeLimit);
+        //_uiManagerScript.UpdateThrustersSlider();
+
+    }
+
+
+
+    /* //Notes
+        public void SpeedBoostActive()
+        {
+            _isSpeedBoostActive = true;
+            _speed = _speed * _speedMultiplier;
+            StartCoroutine(SpeedBoostPowerDownRoutine());
+        }
+
+        IEnumerator SpeedBoostPowerDownRoutine()
+        {
+            yield return new WaitForSeconds(_powerupTimeLimit);
+            _isSpeedBoostActive = false;
+            _speed = _speed / _speedMultiplier;
+        }
+        //Notes
+    */
     void CalculateMovement()
     {
         float _horizontalInput = Input.GetAxis("Horizontal");

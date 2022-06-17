@@ -23,6 +23,8 @@ public class UIManager : MonoBehaviour
     private GameObject _shieldsStrength;
     [SerializeField]
     private GameObject[] shieldsStrengthIcons;
+    [SerializeField]
+    private Slider _thrustersSlider;
 
     private GameManager _gameManager;
 
@@ -41,14 +43,14 @@ public class UIManager : MonoBehaviour
     // Update score display
     public void UpdateScore(int playerScore)
     {
-        _scoreText.text = "Score: " + playerScore.ToString();
+        _scoreText.text = "SCORE: " + playerScore.ToString();
     }
 
     // Update ammo display
     // Feature: Ammo Count
     public void UpdateAmmo(int playerAmmo)
     {
-        _ammoText.text = "Ammo: " + playerAmmo.ToString();
+        _ammoText.text = "AMMO: " + playerAmmo.ToString();
     }
 
     public void UpdateLives(int currentLives)
@@ -107,4 +109,12 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void UpdateThrustersSlider(int thrustTime)
+    {
+        if (thrustTime >= 0 && thrustTime <= 10)
+        {
+            _thrustersSlider.value = thrustTime;
+
+        }
+    }
 }
