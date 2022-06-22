@@ -32,11 +32,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _powerupTimeLimit = 5.0f;
     [SerializeField]
-    private float _thrusterChargeLevelMax = 5.0f;
+    private float _thrusterChargeLevelMax = 10.0f;
     [SerializeField]
     private float _thrusterChargeLevel;
     [SerializeField]
-    private float _changeThrusterChargeBy = 0.5f; // per second while using up thrusters or while waiting for 
+    private float _changeThrusterChargeBy = 1.0f; // per second while using up thrusters or while waiting for 
 
     [SerializeField]
     private bool _canUseThrusters = true; // changes to false when _thrusterChargeLevel reaches 0.0f or less. changes to true when _thrusterChargeLevel reaches 5.0f after empty.
@@ -75,7 +75,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         _speed = _defaultSpeed;
-       _thrusterChargeLevel = _thrusterChargeLevelMax;
+        _thrusterChargeLevel = _thrusterChargeLevelMax;
+        _canUseThrusters = true;
 
         // take the current position = new position
         transform.position = new Vector3(0, -11.3f, 0);
@@ -136,15 +137,12 @@ public class Player : MonoBehaviour
             ThrustersActive();
 
         }
-        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        else if (Input.GetKeyUp(KeyCode.LeftShift) && !_canUseThrusters)
         {
-            _speed = _speed - _shiftSpeedIncrease;
+            _speed = _defaultSpeed;
             _thrustersInUse = false;
         }
-        else if (Input.GetKeyDown(KeyCode.LeftShift) && !_canUseThrusters)
-        {
 
-        }
 
         CalculateMovement();
 
@@ -214,6 +212,20 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(_horizontalPositionLimit, transform.position.y, 0);
         }
+
+        if(_thrustersInUse)
+        {
+            _thrusterChargeLevel -= Time.deltaTime * 3f;
+            _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel);
+            if (_thrusterChargeLevel <= 0)
+            {
+                _uiManagerScript.ThurstersSliderUsableColor(false);
+                _thrustersInUse = false;
+                _thrusterChargeLevel = 0;
+                SpeedReset();
+            }
+        }
+
     }
 
     void FireLaser()
@@ -339,6 +351,12 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(_powerupTimeLimit);
         _isSpeedBoostActive = false;
         _speed = _speed / _speedMultiplier;
+    }
+
+    public void SpeedReset()
+    {
+        _speed = _defaultSpeed;
+        _isSpeedBoostActive = false;
     }
 
     public void ShieldsActive()

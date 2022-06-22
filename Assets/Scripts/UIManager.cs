@@ -25,6 +25,8 @@ public class UIManager : MonoBehaviour
     private GameObject[] shieldsStrengthIcons;
     [SerializeField]
     private Slider _thrustersSlider;
+    [SerializeField]
+    private Image _thrustersSliderFill;
 
     private GameManager _gameManager;
 
@@ -109,12 +111,24 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void UpdateThrustersSlider(int thrustTime)
+    public void UpdateThrustersSlider(float thrustValue)
     {
-        if (thrustTime >= 0 && thrustTime <= 10)
+        if (thrustValue >= 0 && thrustValue <= 10)
         {
-            _thrustersSlider.value = thrustTime;
+            _thrustersSlider.value = thrustValue;
 
+        }
+    }
+
+    public void ThurstersSliderUsableColor(bool usableThrusters)
+    {
+        if (usableThrusters)
+        {
+            _thrustersSliderFill.Color = Color.green;
+        }
+        else if (!usableThrusters)
+        {
+            _thrustersSliderFill.Color = Color.red;
         }
     }
 }
