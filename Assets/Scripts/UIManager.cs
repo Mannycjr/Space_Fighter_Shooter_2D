@@ -124,11 +124,11 @@ public class UIManager : MonoBehaviour
     {
         if (usableThrusters)
         {
-            _thrustersSliderFill.Color = Color.green;
+            _thrustersSliderFill.color = Color.green;
         }
         else if (!usableThrusters)
         {
-            _thrustersSliderFill.Color = Color.red;
+            _thrustersSliderFill.color = Color.red;
         }
     }
 }

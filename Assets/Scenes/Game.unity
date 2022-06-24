@@ -2560,6 +2560,7 @@ MonoBehaviour:
   - {fileID: 1035320614}
   - {fileID: 1931503258}
   _thrustersSlider: {fileID: 1232093795}
+  _thrustersSliderFill: {fileID: 1004479687}
 --- !u!114 &1627373346
 MonoBehaviour:
   m_ObjectHideFlags: 0
