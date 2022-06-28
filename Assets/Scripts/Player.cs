@@ -119,7 +119,10 @@ public class Player : MonoBehaviour
         //    ● If _thrusterChargeLevel < _thrusterChargeLevelMax
         //    ● Add _changeThrusterChargeBy to _thrusterChargeLevel
 
-        // Check charge level. Set _canUseThrusters depending on _thrusterChargeLevel
+        // Check charge level. Restrict to min, max values
+        _thrusterChargeLevel = Mathf.Clamp(_thrusterChargeLevel, 0, _thrusterChargeLevelMax);
+
+        // Set _canUseThrusters depending on _thrusterChargeLevel
         if (_thrusterChargeLevel <= 0.0f)
         {
             _canUseThrusters = false;
@@ -129,13 +132,11 @@ public class Player : MonoBehaviour
             _canUseThrusters = true;
         }
 
-        // 
+        // If left shit key is pressed and thrusters have charge, increase ship speed
         if (Input.GetKeyDown(KeyCode.LeftShift) && _canUseThrusters)
         {
             _speed = _speed + _shiftSpeedIncrease;
             _thrustersInUse = true;
-            ThrustersActive();
-
         }
         else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
@@ -152,26 +153,6 @@ public class Player : MonoBehaviour
             FireLaser();
         }
     }
-
-    // 
-    void ThrustersActive()
-    {
-        // _canFire = Time.time + _fireRate;
-        // _canUseThrusters = 
-        // if (_canUseThrusters = true)
-        _canUseThrusters = true;
-
-        StartCoroutine(ThrustersPowerDownRoutine());
-    }
-
-    IEnumerator ThrustersPowerDownRoutine()
-    {
-        yield return new WaitForSeconds(_powerupTimeLimit);
-        //_uiManagerScript.UpdateThrustersSlider();
-
-    }
-
-
 
 
     void CalculateMovement()
@@ -198,8 +179,11 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(_horizontalPositionLimit, transform.position.y, 0);
         }
 
+        
         if(_thrustersInUse)
         {
+            ThrustersActive();
+/*
             _thrusterChargeLevel -= Time.deltaTime * _changeThrusterChargeBy;
             _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); //Reduce thruster bar UI 
             Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
@@ -211,9 +195,48 @@ public class Player : MonoBehaviour
                 _thrusterChargeLevel = 0;
                 SpeedReset();
             }
+            */
+        }
+        else if(!_thrustersInUse)
+        {
+            StartCoroutine(ThrustersPowerReplenishRoutine());
         }
 
+
     }
+
+    // Super Speed Thrusters are ON
+    void ThrustersActive()
+    {
+
+        if (_canUseThrusters = true)
+        {
+            _thrusterChargeLevel -= Time.deltaTime * _changeThrusterChargeBy;
+            _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); //Reduce thruster bar UI 
+            Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
+
+            if (_thrusterChargeLevel <= 0)
+            {
+                _uiManagerScript.ThurstersSliderUsableColor(false);
+                _thrustersInUse = false;
+                SpeedReset();
+            }
+        }
+
+        //StartCoroutine(ThrustersPowerDownRoutine());
+    }
+
+    IEnumerator ThrustersPowerReplenishRoutine()
+    {
+        yield return new WaitForSeconds(_powerupTimeLimit);
+    }
+
+    //
+    void ThrustersInactive()
+    {
+
+    }
+
 
     void FireLaser()
     {
