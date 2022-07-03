@@ -147,7 +147,7 @@ public class Player : MonoBehaviour
 
         CalculateMovement();
 
-        // Cooldown system
+        // Firing Cooldown system
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
@@ -183,19 +183,6 @@ public class Player : MonoBehaviour
         if(_thrustersInUse)
         {
             ThrustersActive();
-/*
-            _thrusterChargeLevel -= Time.deltaTime * _changeThrusterChargeBy;
-            _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); //Reduce thruster bar UI 
-            Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
-
-            if (_thrusterChargeLevel <= 0)
-            {
-                _uiManagerScript.ThurstersSliderUsableColor(false);
-                _thrustersInUse = false;
-                _thrusterChargeLevel = 0;
-                SpeedReset();
-            }
-            */
         }
         else if(!_thrustersInUse)
         {
@@ -212,7 +199,7 @@ public class Player : MonoBehaviour
         if (_canUseThrusters = true)
         {
             _thrusterChargeLevel -= Time.deltaTime * _changeThrusterChargeBy;
-            _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); //Reduce thruster bar UI 
+            _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); //Change thruster bar UI: reduce 
             Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
 
             if (_thrusterChargeLevel <= 0)
@@ -228,12 +215,29 @@ public class Player : MonoBehaviour
 
     IEnumerator ThrustersPowerReplenishRoutine()
     {
-        yield return new WaitForSeconds(_powerupTimeLimit);
-    }
+        
+        // turn off thruster audio
+        //
 
-    //
-    void ThrustersInactive()
-    {
+        if (!_thrustersInUse)
+        {
+            yield return new WaitForSeconds(_powerupTimeLimit);
+
+            while(_thrusterChargeLevel <= _thrusterChargeLevelMax && !_thrustersInUse)
+            {
+                yield return null;
+                _thrusterChargeLevel += Time.deltaTime;
+                _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); // Change thruster bar UI: increase
+            }
+
+            if (_thrusterChargeLevel => _thrusterChargeLevelMax)
+            {
+                _uiManagerScript.ThurstersSliderUsableColor(true);
+                _canUseThrusters = true;
+            }
+        }
+        
+
 
     }
     
