@@ -32,11 +32,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _powerupTimeLimit = 5.0f;
     [SerializeField]
+    private float _powerupThrustersWaitTimeLimit = 3.0f;
+    [SerializeField]
     private float _thrusterChargeLevelMax = 10.0f;
     [SerializeField]
     private float _thrusterChargeLevel;
     [SerializeField]
-    private float _changeThrusterChargeBy = 1.0f; // per second while using up thrusters or while waiting for 
+    private float _changeDecreaseThrusterChargeBy = 1.0f; // 
+    [SerializeField]
+    private float _changeIncreaseThrusterChargeBy = 0.05f; // 
 
     [SerializeField]
     private bool _canUseThrusters = true; // changes to false when _thrusterChargeLevel reaches 0.0f or less. changes to true when _thrusterChargeLevel reaches _thrusterChargeLevelMax after empty.
@@ -110,14 +114,14 @@ public class Player : MonoBehaviour
     {
         // Feature: Thrusters
         // ● Move the player at an increased rate when the ‘Left Shift’ key is pressed down 
-        //    ● Reduce thrusters charge UI by _changeThrusterChargeBy per second
+        //    ● Reduce thrusters charge UI by _changeDecreaseThrusterChargeBy per second
         // ● Reset back to normal speed when 
         //    ● the ‘Left Shift’ key is released
         //    ● or when thrusters charge is depleted
         // ● If thrusters charge is depleted,
         //    ● Reset back to normal speed
         //    ● If _thrusterChargeLevel < _thrusterChargeLevelMax
-        //    ● Add _changeThrusterChargeBy to _thrusterChargeLevel
+        //    ● Add _changeIncreaseThrusterChargeBy to _thrusterChargeLevel
 
         // Check charge level. Restrict to min, max values
         _thrusterChargeLevel = Mathf.Clamp(_thrusterChargeLevel, 0, _thrusterChargeLevelMax);
@@ -189,7 +193,6 @@ public class Player : MonoBehaviour
             StartCoroutine(ThrustersPowerReplenishRoutine());
         }
 
-
     }
 
     // Super Speed Thrusters are ON
@@ -198,7 +201,7 @@ public class Player : MonoBehaviour
 
         if (_canUseThrusters = true)
         {
-            _thrusterChargeLevel -= Time.deltaTime * _changeThrusterChargeBy;
+            _thrusterChargeLevel -= Time.deltaTime * _changeDecreaseThrusterChargeBy;
             _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); //Change thruster bar UI: reduce 
             Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
 
@@ -210,34 +213,29 @@ public class Player : MonoBehaviour
             }
         }
 
-        //StartCoroutine(ThrustersPowerDownRoutine());
     }
 
+    // ThrustersNOTActive
     IEnumerator ThrustersPowerReplenishRoutine()
     {
         
         // turn off thruster audio
         //
+        yield return new WaitForSeconds(_powerupThrustersWaitTimeLimit);
 
-        if (!_thrustersInUse)
+        while(_thrusterChargeLevel <= _thrusterChargeLevelMax && !_thrustersInUse)
         {
-            yield return new WaitForSeconds(_powerupTimeLimit);
-
-            while(_thrusterChargeLevel <= _thrusterChargeLevelMax && !_thrustersInUse)
-            {
-                yield return null;
-                _thrusterChargeLevel += Time.deltaTime;
-                _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); // Change thruster bar UI: increase
-            }
-
-            if (_thrusterChargeLevel => _thrusterChargeLevelMax)
-            {
-                _uiManagerScript.ThurstersSliderUsableColor(true);
-                _canUseThrusters = true;
-            }
+            yield return null;
+            _thrusterChargeLevel +=  Time.deltaTime * _changeIncreaseThrusterChargeBy; //
+            _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); // Change thruster bar UI: increase
+            Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
         }
-        
 
+        if (_thrusterChargeLevel >= _thrusterChargeLevelMax)
+        {
+            _uiManagerScript.ThurstersSliderUsableColor(true);
+            _canUseThrusters = true;
+        }
 
     }
     
