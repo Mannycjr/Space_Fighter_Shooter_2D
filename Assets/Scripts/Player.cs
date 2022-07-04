@@ -7,10 +7,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _defaultSpeed = 5.0f;
     [SerializeField]
-    private float _shiftSpeedIncrease = 2.5f;
+    private float _shiftSpeedMultiplier = 2.0f;
     private float _speed;
     [SerializeField]
-    private float _speedMultiplier = 4.0f;
+    private float _speedPowerupMultiplier = 4.0f; // For Speed Powerup
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
@@ -38,9 +38,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _thrusterChargeLevel;
     [SerializeField]
-    private float _changeDecreaseThrusterChargeBy = 1.0f; // 
+    private float _changeDecreaseThrusterChargeBy = 1.5f; // 
     [SerializeField]
-    private float _changeIncreaseThrusterChargeBy = 0.05f; // 
+    private float _changeIncreaseThrusterChargeBy = 0.01f; // 
 
     [SerializeField]
     private bool _canUseThrusters = true; // changes to false when _thrusterChargeLevel reaches 0.0f or less. changes to true when _thrusterChargeLevel reaches _thrusterChargeLevelMax after empty.
@@ -131,7 +131,7 @@ public class Player : MonoBehaviour
         {
             _canUseThrusters = false;
         }
-        else if (_thrusterChargeLevel > 0.0f)
+        else if (_thrusterChargeLevel >= ( _thrusterChargeLevelMax/0.75f))
         {
             _canUseThrusters = true;
         }
@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
         // If left shit key is pressed and thrusters have charge, increase ship speed
         if (Input.GetKeyDown(KeyCode.LeftShift) && _canUseThrusters)
         {
-            _speed = _speed + _shiftSpeedIncrease;
+            _speed *= _shiftSpeedMultiplier;
             _thrustersInUse = true;
         }
         else if (Input.GetKeyUp(KeyCode.LeftShift))
@@ -209,13 +209,14 @@ public class Player : MonoBehaviour
             {
                 _uiManagerScript.ThurstersSliderUsableColor(false);
                 _thrustersInUse = false;
+                _canUseThrusters = false;
                 SpeedReset();
             }
         }
 
     }
 
-    // ThrustersNOTActive
+    // Thrusters NOT Active
     IEnumerator ThrustersPowerReplenishRoutine()
     {
         
@@ -354,7 +355,7 @@ public class Player : MonoBehaviour
     public void SpeedBoostActive()
     {
         _isSpeedBoostActive = true;
-        _speed = _speed * _speedMultiplier;
+        _speed = _defaultSpeed * _speedPowerupMultiplier;
         StartCoroutine(SpeedBoostPowerDownRoutine());
     }
 
@@ -362,7 +363,15 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(_powerupTimeLimit);
         _isSpeedBoostActive = false;
-        _speed = _speed / _speedMultiplier;
+        if (_thrustersInUse)
+        {
+            _speed = _defaultSpeed * _shiftSpeedMultiplier;
+        }
+        else if (!_thrustersInUse)
+        {
+            _speed = _defaultSpeed;
+        }
+
     }
 
     public void SpeedReset()

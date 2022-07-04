@@ -593,9 +593,11 @@ MonoBehaviour:
   _isShieldsActive: 0
   _isWideShotActive: 0
   _powerupTimeLimit: 5
+  _powerupThrustersWaitTimeLimit: 3
   _thrusterChargeLevelMax: 10
   _thrusterChargeLevel: 10
-  _changeThrusterChargeBy: 0.5
+  _changeDecreaseThrusterChargeBy: 1.5
+  _changeIncreaseThrusterChargeBy: 0.01
   _canUseThrusters: 0
   _thrustersInUse: 0
   _shieldVisualizer: {fileID: 1467845346}
