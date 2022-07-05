@@ -38,14 +38,13 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _thrusterChargeLevel;
     [SerializeField]
-    private float _changeDecreaseThrusterChargeBy = 1.5f; // 
+    private float _changeDecreaseThrusterChargeBy = 1.5f;
     [SerializeField]
-    private float _changeIncreaseThrusterChargeBy = 0.01f; // 
-
+    private float _changeIncreaseThrusterChargeBy = 0.01f;
     [SerializeField]
-    private bool _canUseThrusters = true; // changes to false when _thrusterChargeLevel reaches 0.0f or less. changes to true when _thrusterChargeLevel reaches _thrusterChargeLevelMax after empty.
+    private bool _canUseThrusters = true; 
     [SerializeField]
-    private bool _thrustersInUse = false; //
+    private bool _thrustersInUse = false; 
 
 
     [SerializeField]
@@ -112,17 +111,6 @@ public class Player : MonoBehaviour
     
     void Update()
     {
-        // Feature: Thrusters
-        // ● Move the player at an increased rate when the ‘Left Shift’ key is pressed down 
-        //    ● Reduce thrusters charge UI by _changeDecreaseThrusterChargeBy per second
-        // ● Reset back to normal speed when 
-        //    ● the ‘Left Shift’ key is released
-        //    ● or when thrusters charge is depleted
-        // ● If thrusters charge is depleted,
-        //    ● Reset back to normal speed
-        //    ● If _thrusterChargeLevel < _thrusterChargeLevelMax
-        //    ● Add _changeIncreaseThrusterChargeBy to _thrusterChargeLevel
-
         // Check charge level. Restrict to min, max values
         _thrusterChargeLevel = Mathf.Clamp(_thrusterChargeLevel, 0, _thrusterChargeLevelMax);
 
@@ -213,7 +201,6 @@ public class Player : MonoBehaviour
                 SpeedReset();
             }
         }
-
     }
 
     // Thrusters NOT Active
@@ -237,7 +224,6 @@ public class Player : MonoBehaviour
             _uiManagerScript.ThurstersSliderUsableColor(true);
             _canUseThrusters = true;
         }
-
     }
     
 
