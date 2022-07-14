@@ -15,7 +15,7 @@ public class MainCamera : MonoBehaviour
     {
         Vector3 _defaultCameraPos = this.transform.position;
         float _shakeTime = Time.time + _shakeLength;
-        float _shakePosRangeMax = 0.3f; 
+        float _shakePosRangeMax = 0.1f; 
 
         while (Time.time < _shakeTime)
         {
