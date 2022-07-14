@@ -46,7 +46,6 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _thrustersInUse = false; 
 
-
     [SerializeField]
     private GameObject _shieldVisualizer;
 
@@ -74,6 +73,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _ammoCount = 15; //Feature: Ammo Count
 
+    private MainCamera _mainCamera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -86,6 +87,7 @@ public class Player : MonoBehaviour
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManagerScript = GameObject.Find("Canvas").GetComponent<UIManager>();
         _sfxAudioSource = GetComponent<AudioSource>();
+        _mainCamera = GameObject.Find("Main_Camera").GetComponent<MainCamera>();
 
         if (_spawnManager == null)
         {
@@ -291,7 +293,8 @@ public class Player : MonoBehaviour
         {
             _lives--;
             _uiManagerScript.UpdateLives(_lives);
-            UpdateDamage();
+            UpdateDamageSmoke();
+            _mainCamera.CameraShake();
         }
 
         if (_lives < 1)
@@ -397,11 +400,11 @@ public class Player : MonoBehaviour
         {
             _lives++;
             _uiManagerScript.UpdateLives(_lives);
-            UpdateDamage();
+            UpdateDamageSmoke();
         }
     }
 
-    private void UpdateDamage()
+    private void UpdateDamageSmoke()
     {
         switch (_lives)
         {
