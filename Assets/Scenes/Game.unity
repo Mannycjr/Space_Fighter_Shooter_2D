@@ -580,8 +580,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _defaultSpeed: 5
-  _shiftSpeedIncrease: 2.5
-  _speedMultiplier: 4
+  _shiftSpeedMultiplier: 2
+  _speedPowerupMultiplier: 4
   _laserPrefab: {fileID: 8969816785059780937, guid: ccc153c087388bd4ea6c9b287b04e1ee,
     type: 3}
   _tripleShotLaserPrefab: {fileID: 5702910022711261584, guid: 3e1bbfb4479e0a148b968ee5df1445fd,
@@ -610,6 +610,7 @@ MonoBehaviour:
     type: 3}
   _shieldStrength: 0
   _ammoCount: 15
+  _mainCamera: {fileID: 1972805295}
 --- !u!212 &208557279
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2872,8 +2873,9 @@ GameObject:
   - component: {fileID: 1972805297}
   - component: {fileID: 1972805296}
   - component: {fileID: 1972805299}
+  - component: {fileID: 1972805300}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Main_Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3004,6 +3006,18 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &1972805300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972805295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95104207aa5005a4b86f24236ac17e8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2030826922
 GameObject:
   m_ObjectHideFlags: 0
