@@ -107,6 +107,11 @@ public class Player : MonoBehaviour
             _sfxAudioSource.clip = _sfxClipLaser;
         }
 
+        if (_mainCamera == null)
+        {
+            Debug.LogError("Player::Start() Called. The _mainCamera is NULL.");
+        }
+
         _uiManagerScript.UpdateAmmo(_ammoCount);
     }
 
