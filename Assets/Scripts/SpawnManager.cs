@@ -14,7 +14,9 @@ public class SpawnManager : MonoBehaviour
     float _xPositionLimit = 10.0f;
     float _randomX;
     float _randomY;
-    float _waitTime = 5.0f;
+    [SerializeField]
+    float _randomZangle;
+    float _waitTime = 2.0f; // Enemy spawning looping wait time between enemies
     float _waitTimeWideShot = 5.0f;
     float _randomWaitTime;
     private bool _stopSpawning = false;
@@ -34,7 +36,7 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator spawnEnemyRoutine()
     {
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(3.0f); // Initial wait at beginning of game
 
         //while loop (infinite loop)
         while (_stopSpawning == false)
@@ -42,8 +44,9 @@ public class SpawnManager : MonoBehaviour
             // Instantiate enemy prefab
             _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
             _randomY = Random.Range(_yPositionLimit/2, _yPositionLimit);
+            _randomZangle = Random.Range(-40f,40f);
             Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
-            GameObject newEnemy = Instantiate(_enemyPrefab, spawnPosition, Quaternion.identity);
+            GameObject newEnemy = Instantiate(_enemyPrefab, spawnPosition, Quaternion.Euler(0, 0, _randomZangle));
             newEnemy.transform.parent = _enemyContainer.transform;
             // yield wait for 5 seconds
             yield return new WaitForSeconds(_waitTime);
