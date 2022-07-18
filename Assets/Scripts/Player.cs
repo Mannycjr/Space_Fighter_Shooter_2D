@@ -5,9 +5,12 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 5.0f;
+    private float _defaultSpeed = 5.0f;
     [SerializeField]
-    private float _speedMultiplier = 2.0f;
+    private float _shiftSpeedMultiplier = 2.0f;
+    private float _speed;
+    [SerializeField]
+    private float _speedPowerupMultiplier = 4.0f; // For Speed Powerup
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
@@ -25,7 +28,23 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _isShieldsActive = false;
     [SerializeField]
+    private bool _isWideShotActive = false;
+    [SerializeField]
     private float _powerupTimeLimit = 5.0f;
+    [SerializeField]
+    private float _powerupThrustersWaitTimeLimit = 3.0f;
+    [SerializeField]
+    private float _thrusterChargeLevelMax = 10.0f;
+    [SerializeField]
+    private float _thrusterChargeLevel;
+    [SerializeField]
+    private float _changeDecreaseThrusterChargeBy = 1.5f;
+    [SerializeField]
+    private float _changeIncreaseThrusterChargeBy = 0.01f;
+    [SerializeField]
+    private bool _canUseThrusters = true; 
+    [SerializeField]
+    private bool _thrustersInUse = false; 
 
     [SerializeField]
     private GameObject _shieldVisualizer;
@@ -45,14 +64,30 @@ public class Player : MonoBehaviour
 
     private AudioSource _sfxAudioSource;
 
+    [SerializeField]
+    private GameObject _explosionPrefab;
+
+    [SerializeField]
+    private int _shieldStrength = 0;
+
+    [SerializeField]
+    private int _ammoCount = 15; //Feature: Ammo Count
+
+    private MainCamera _mainCamera;
+
     // Start is called before the first frame update
     void Start()
     {
+        _speed = _defaultSpeed;
+        _thrusterChargeLevel = _thrusterChargeLevelMax;
+        _canUseThrusters = true;
+
         // take the current position = new position
         transform.position = new Vector3(0, -11.3f, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManagerScript = GameObject.Find("Canvas").GetComponent<UIManager>();
         _sfxAudioSource = GetComponent<AudioSource>();
+        _mainCamera = GameObject.Find("Main_Camera").GetComponent<MainCamera>();
 
         if (_spawnManager == null)
         {
@@ -71,19 +106,53 @@ public class Player : MonoBehaviour
         {
             _sfxAudioSource.clip = _sfxClipLaser;
         }
+
+        if (_mainCamera == null)
+        {
+            Debug.LogError("Player::Start() Called. The _mainCamera is NULL.");
+        }
+
+        _uiManagerScript.UpdateAmmo(_ammoCount);
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
+        // Check charge level. Restrict to min, max values
+        _thrusterChargeLevel = Mathf.Clamp(_thrusterChargeLevel, 0, _thrusterChargeLevelMax);
+
+        // Set _canUseThrusters depending on _thrusterChargeLevel
+        if (_thrusterChargeLevel <= 0.0f)
+        {
+            _canUseThrusters = false;
+        }
+        else if (_thrusterChargeLevel >= ( _thrusterChargeLevelMax/0.75f))
+        {
+            _canUseThrusters = true;
+        }
+
+        // If left shit key is pressed and thrusters have charge, increase ship speed
+        if (Input.GetKeyDown(KeyCode.LeftShift) && _canUseThrusters)
+        {
+            _speed *= _shiftSpeedMultiplier;
+            _thrustersInUse = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _speed = _defaultSpeed;
+            _thrustersInUse = false;
+        }
+
+
         CalculateMovement();
 
-        // Cooldown system
+        // Firing Cooldown system
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
         }
     }
+
 
     void CalculateMovement()
     {
@@ -108,57 +177,141 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(_horizontalPositionLimit, transform.position.y, 0);
         }
+
+        
+        if(_thrustersInUse)
+        {
+            ThrustersActive();
+        }
+        else if(!_thrustersInUse)
+        {
+            StartCoroutine(ThrustersPowerReplenishRoutine());
+        }
+
     }
+
+    // Super Speed Thrusters are ON
+    void ThrustersActive()
+    {
+
+        if (_canUseThrusters = true)
+        {
+            _thrusterChargeLevel -= Time.deltaTime * _changeDecreaseThrusterChargeBy;
+            _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); //Change thruster bar UI: reduce 
+            Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
+
+            if (_thrusterChargeLevel <= 0)
+            {
+                _uiManagerScript.ThurstersSliderUsableColor(false);
+                _thrustersInUse = false;
+                _canUseThrusters = false;
+                SpeedReset();
+            }
+        }
+    }
+
+    // Thrusters NOT Active
+    IEnumerator ThrustersPowerReplenishRoutine()
+    {
+        
+        // turn off thruster audio
+        //
+        yield return new WaitForSeconds(_powerupThrustersWaitTimeLimit);
+
+        while(_thrusterChargeLevel <= _thrusterChargeLevelMax && !_thrustersInUse)
+        {
+            yield return null;
+            _thrusterChargeLevel +=  Time.deltaTime * _changeIncreaseThrusterChargeBy; //
+            _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); // Change thruster bar UI: increase
+            Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
+        }
+
+        if (_thrusterChargeLevel >= _thrusterChargeLevelMax)
+        {
+            _uiManagerScript.ThurstersSliderUsableColor(true);
+            _canUseThrusters = true;
+        }
+    }
+    
 
     void FireLaser()
     {
         _canFire = Time.time + _fireRate;
 
-        // if tripleshotActive is true
-        if (_isTripleShotActive == true)
-        {
-            Instantiate(_tripleShotLaserPrefab, transform.position, Quaternion.identity);
-        }
-        else
-        {
-            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+        // Feature: Ammo Count
+        if (_ammoCount > 0 )
+         {
+            // if tripleshotActive is true
+            if (_isTripleShotActive == true && _isWideShotActive == false)
+            {
+                Instantiate(_tripleShotLaserPrefab, transform.position, Quaternion.identity);
+                
+            } 
+            else if (_isTripleShotActive == false && _isWideShotActive == true)
+            {
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.Euler(0, 0, 45f));
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.Euler(0, 0, 90f));
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.Euler(0, 0, -45f));
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.Euler(0, 0, -90f));
+            }
+            else
+            {
+                Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+                _isTripleShotActive = false;
+                _isWideShotActive = false;
+            }
+
+            _ammoCount--;
+            _uiManagerScript.UpdateAmmo(_ammoCount);
+            Debug.Log("_ammoCount=" + _ammoCount);
+            // Play Laser SFX
+            _sfxAudioSource.Play(0);
+
         }
 
-        // Play Laser SFX
-        _sfxAudioSource.Play(0);  
     }
 
     public void Damage()
     {
+        // Feature: Shield Strength
+        // ● Allow for 3 hits on the shield to accommodate visualization
         if (_isShieldsActive)
         {
-            _isShieldsActive = false;
-            _shieldVisualizer.SetActive(false);
+            if (_shieldStrength >= 1)
+            {
+                --_shieldStrength;
+                Debug.Log("shieldStrength="+ _shieldStrength);
+            }
+
+            if (_shieldStrength < 1)
+            {
+                _isShieldsActive = false;
+                _shieldVisualizer.SetActive(false);
+            }
+
+            _uiManagerScript.UpdateShieldsStrength(_shieldStrength);
             return;
         }
 
-        _lives--;
-
-        if (_lives == 2)
+        if (_lives > 0)
         {
-            _damageEngineLeft.SetActive(true);
+            _lives--;
+            _uiManagerScript.UpdateLives(_lives);
+            UpdateDamageSmoke();
+            _mainCamera.CameraShake();
         }
-        else if (_lives == 1)
-        {
-            _damageEngineRight.SetActive(true);
-        }
-
-        _uiManagerScript.UpdateLives(_lives);
 
         if (_lives < 1)
         {
+            playExplosionAnim();
             // Communicate with Spawn Manager
             // Let them know to stop spawning
             _spawnManager.OnPlayerDeath();
 
             _sfxAudioSource.clip = _sfxClipExplosion;
             _sfxAudioSource.Play(0);
-
+            
             Destroy(this.gameObject);
         }
     }
@@ -166,22 +319,37 @@ public class Player : MonoBehaviour
     public void TripleshotActive()
     {
         _isTripleShotActive = true;
+        _isWideShotActive = false;
         // start the powerdown coroutine for triple shot
         StartCoroutine(TripleshotPowerDownRoutine());
     }
 
     IEnumerator TripleshotPowerDownRoutine()
     {
-
         // wait 5 seconds
         yield return new WaitForSeconds(_powerupTimeLimit);
         _isTripleShotActive = false;
     }
 
+    public void WideShotActive()
+    {
+        _isTripleShotActive = false;
+        _isWideShotActive = true;
+        // start the powerdown coroutine for triple shot
+        StartCoroutine(WideShotPowerDownRoutine());
+    }
+
+    IEnumerator WideShotPowerDownRoutine()
+    {
+        // wait 5 seconds
+        yield return new WaitForSeconds(_powerupTimeLimit);
+        _isWideShotActive = false;
+    }
+
     public void SpeedBoostActive()
     {
         _isSpeedBoostActive = true;
-        _speed = _speed * _speedMultiplier;
+        _speed = _defaultSpeed * _speedPowerupMultiplier;
         StartCoroutine(SpeedBoostPowerDownRoutine());
     }
 
@@ -189,13 +357,38 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(_powerupTimeLimit);
         _isSpeedBoostActive = false;
-        _speed = _speed / _speedMultiplier;
+        if (_thrustersInUse)
+        {
+            _speed = _defaultSpeed * _shiftSpeedMultiplier;
+        }
+        else if (!_thrustersInUse)
+        {
+            _speed = _defaultSpeed;
+        }
+
+    }
+
+    public void SpeedReset()
+    {
+        _speed = _defaultSpeed;
+        _isSpeedBoostActive = false;
     }
 
     public void ShieldsActive()
     {
         _isShieldsActive = true;
         _shieldVisualizer.SetActive(true);
+        _shieldStrength = 3;
+        Debug.Log("shieldStrength=" + _shieldStrength);
+        _uiManagerScript.UpdateShieldsStrength(_shieldStrength);
+        
+    }
+
+    // Feature: Ammo Collectable: Create a powerup that refills the ammo count allowing the player to fire again
+    public void RefillAmmo()
+    {
+        _ammoCount = 15;
+        _uiManagerScript.UpdateAmmo(_ammoCount);
     }
 
     // method to add 10 to the score
@@ -204,6 +397,40 @@ public class Player : MonoBehaviour
         _score += points;
         _uiManagerScript.UpdateScore(_score); // communicate to the UI to update the score
     }
-    
+
+    // Feature: Health Collectable: Create a health collectable that heals the player by 1. Update the visuals of the Player to reflect this.
+    public void AddLife()
+    {
+        if (_lives < 3)
+        {
+            _lives++;
+            _uiManagerScript.UpdateLives(_lives);
+            UpdateDamageSmoke();
+        }
+    }
+
+    private void UpdateDamageSmoke()
+    {
+        switch (_lives)
+        {
+            case 3:
+                _damageEngineRight.SetActive(false);
+                _damageEngineLeft.SetActive(false);
+                break;
+            case 2:
+                _damageEngineRight.SetActive(false);
+                _damageEngineLeft.SetActive(true);
+                break;
+            case 1:
+                _damageEngineRight.SetActive(true);
+                _damageEngineLeft.SetActive(true);
+                break;
+        }
+    }
+
+    public void playExplosionAnim()
+    {
+        Instantiate(_explosionPrefab, this.transform.position, Quaternion.identity);
+    }
 
 }

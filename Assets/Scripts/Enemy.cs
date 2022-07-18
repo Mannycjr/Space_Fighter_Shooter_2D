@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]
     private float _speed = 4.0f;
+    [SerializeField]
+    private GameObject _laserPrefab;
+
     float _verticalPositionLimit = 6f;
     float _horizontalPositionLimit = 10.0f;
     private SpawnManager _spawnManager; // get script SpawnManager of GameObject Spawn_Manager
@@ -14,11 +18,14 @@ public class Enemy : MonoBehaviour
     private Animator _explosionAnimation;
     private float _explosionAnimLength = 2.6f;
 
-    private BoxCollider2D _boxCollider;
+    //private BoxCollider2D _boxCollider;
 
     [SerializeField]
     private AudioClip _sfxClipExplosion;
     private AudioSource _sfxExplosion;
+
+    private float _fireRate = 3.0f;
+    private float _canFire = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -43,11 +50,13 @@ public class Enemy : MonoBehaviour
             Debug.LogError("Enemy::Start() Called. The enemy explosion anim controller is NULL.");
         }
 
+        /*
         _boxCollider = GetComponent<BoxCollider2D>();
         if (_boxCollider == null)
         {
             Debug.LogError("Enemy::Start() Called. The enemy Box Collider 2D is NULL.");
         }
+        */
 
         _sfxExplosion = GetComponent<AudioSource>();
         if (_sfxExplosion == null)
@@ -63,6 +72,28 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CalculateMovement();
+
+        if (Time.time > _canFire)
+        {
+            _fireRate = Random.Range(3f, 7f);
+            _canFire = Time.time + _fireRate;
+            Vector3 _newLaserSpawnPos = transform.position + new Vector3(0,-1,0); // offset laser spawn position down
+
+            GameObject enemyLaser = Instantiate(_laserPrefab, _newLaserSpawnPos, Quaternion.identity);
+            Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+
+            for (int i = 0; i < lasers.Length; i++)
+            {
+                lasers[i].AssignEnemyLaser();
+                
+            }
+
+        }
+    }
+
+    void CalculateMovement()
+    {
         // move down 4 meters per second
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
 
@@ -73,14 +104,14 @@ public class Enemy : MonoBehaviour
             if (_spawnManager.get_stopSpawning() == "false")
             {
                 moveToTopRandomXPosition();
-            } else
+            }
+            else
             {
                 Debug.Log("Player is dead. No need this enemy.");
                 Destroy(this.gameObject);
             }
 
         }
-
     }
 
     private void moveToTopRandomXPosition ()
@@ -125,7 +156,8 @@ public class Enemy : MonoBehaviour
     {
         // trigger anim
         _explosionAnimation.SetTrigger("OnEnemyDeath");
-        _boxCollider.enabled = false; //Prevent more damage 
+        //_boxCollider.enabled = false; //Prevent more damage 
+        Destroy(GetComponent<Collider2D>()); //Saves RAM to just destroy rather than disable.
         _speed = 0;
         _sfxExplosion.Play(0);
 
