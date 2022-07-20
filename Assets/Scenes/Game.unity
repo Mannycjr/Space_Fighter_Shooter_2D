@@ -610,7 +610,6 @@ MonoBehaviour:
     type: 3}
   _shieldStrength: 0
   _ammoCount: 15
-  _mainCamera: {fileID: 1972805295}
 --- !u!212 &208557279
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1849,6 +1848,7 @@ MonoBehaviour:
   - {fileID: 7783326878229611857, guid: 8b419e6961127fb4fa597567699413f3, type: 3}
   - {fileID: 3448969440346538763, guid: 8f6142c5ed41b0040ae8b72f431e2f51, type: 3}
   - {fileID: 8206816044409370382, guid: 744fc60994e23c745ba1d808f8e6fdb7, type: 3}
+  _randomZangle: 0
 --- !u!4 &1027356985
 Transform:
   m_ObjectHideFlags: 0
@@ -2230,7 +2230,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'AMMO: 00'
+  m_Text: 'AMMO: 00/15'
 --- !u!222 &1419242987
 CanvasRenderer:
   m_ObjectHideFlags: 0

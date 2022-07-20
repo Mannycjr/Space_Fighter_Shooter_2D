@@ -387,7 +387,7 @@ public class Player : MonoBehaviour
     // Feature: Ammo Collectable: Create a powerup that refills the ammo count allowing the player to fire again
     public void RefillAmmo()
     {
-        _ammoCount = 15;
+        _ammoCount = 15; // Max ammo count hard-coded to 15
         _uiManagerScript.UpdateAmmo(_ammoCount);
     }
 
