@@ -71,7 +71,9 @@ public class Player : MonoBehaviour
     private int _shieldStrength = 0;
 
     [SerializeField]
-    private int _ammoCount = 15; //Feature: Ammo Count
+    private int _ammoCount = 20; //Feature: Ammo Count
+    [SerializeField]
+    private int _maxAmmo = 20; //Feature: Ammo Count
 
     private MainCamera _mainCamera;
 
@@ -112,7 +114,7 @@ public class Player : MonoBehaviour
             Debug.LogError("Player::Start() Called. The _mainCamera is NULL.");
         }
 
-        _uiManagerScript.UpdateAmmo(_ammoCount);
+        _uiManagerScript.UpdateAmmo(_ammoCount,_maxAmmo);
     }
 
     
@@ -263,7 +265,7 @@ public class Player : MonoBehaviour
             }
 
             _ammoCount--;
-            _uiManagerScript.UpdateAmmo(_ammoCount);
+            _uiManagerScript.UpdateAmmo(_ammoCount,_maxAmmo);
             Debug.Log("_ammoCount=" + _ammoCount);
             // Play Laser SFX
             _sfxAudioSource.Play(0);
@@ -387,8 +389,8 @@ public class Player : MonoBehaviour
     // Feature: Ammo Collectable: Create a powerup that refills the ammo count allowing the player to fire again
     public void RefillAmmo()
     {
-        _ammoCount = 15; // Max ammo count hard-coded to 15
-        _uiManagerScript.UpdateAmmo(_ammoCount);
+        _ammoCount = _maxAmmo; // ammo count reset to maximum ammo setting
+        _uiManagerScript.UpdateAmmo(_ammoCount,_maxAmmo);
     }
 
     // method to add 10 to the score

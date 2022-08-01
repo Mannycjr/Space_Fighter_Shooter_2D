@@ -50,9 +50,9 @@ public class UIManager : MonoBehaviour
 
     // Update ammo display
     // Feature: Ammo Count
-    public void UpdateAmmo(int playerAmmo)
+    public void UpdateAmmo(int playerAmmoCurrent, int playerAmmoMax)
     {
-        _ammoText.text = "AMMO: " + playerAmmo.ToString() + "/15"; // Max ammo count hard-coded to 15
+        _ammoText.text = "AMMO: " + playerAmmoCurrent.ToString() + "/" + playerAmmoMax.ToString(); 
     }
 
     public void UpdateLives(int currentLives)

@@ -609,7 +609,8 @@ MonoBehaviour:
   _explosionPrefab: {fileID: 2120101906882405735, guid: d52f40f04b8ba7c4599826ef7a3d66fe,
     type: 3}
   _shieldStrength: 0
-  _ammoCount: 15
+  _ammoCount: 20
+  _maxAmmo: 20
 --- !u!212 &208557279
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2230,7 +2231,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'AMMO: 00/15'
+  m_Text: 'AMMO: 00/20'
 --- !u!222 &1419242987
 CanvasRenderer:
   m_ObjectHideFlags: 0
