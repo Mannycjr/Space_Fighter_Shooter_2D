@@ -73,7 +73,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _ammoCount = 20; //Feature: Ammo Count
     [SerializeField]
-    private int _maxAmmo = 20; //Feature: Ammo Count
+    private int _maxAmmo = 20; //Feature: Ammo Count Maximum
 
     private MainCamera _mainCamera;
 
