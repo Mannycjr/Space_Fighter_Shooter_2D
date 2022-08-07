@@ -34,6 +34,11 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(spawnWideShotPowerupRoutine());
     }
 
+    public void StopSpawning()
+    {
+        _stopSpawning = true;
+    }
+
     IEnumerator spawnEnemyRoutine()
     {
         yield return new WaitForSeconds(3.0f); // Initial wait at beginning of game

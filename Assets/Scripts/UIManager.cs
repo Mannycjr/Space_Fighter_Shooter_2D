@@ -28,6 +28,10 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Image _thrustersSliderFill;
 
+    public Text _waveIDDisplay;
+    public Text _waveTimeDisplay;
+    public bool _waveEnded = false;
+
     private GameManager _gameManager;
 
     // Start is called before the first frame update
@@ -130,5 +134,19 @@ public class UIManager : MonoBehaviour
         {
             _thrustersSliderFill.color = Color.red;
         }
+    }
+
+    public void WaveIDUpdate( int waveID)
+    {
+        _waveIDDisplay.text = "Wave " + waveID.ToString();
+    }
+
+    public void WaveTimeUpdate( float _seconds)
+    {
+        float _waveTime = Math.RoundToInt(_seconds);
+        _waveTimeDisplay.text = _waveTime.ToString();
+
+
+
     }
 }
