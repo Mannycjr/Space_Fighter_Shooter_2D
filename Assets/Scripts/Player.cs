@@ -198,7 +198,7 @@ public class Player : MonoBehaviour
         {
             _thrusterChargeLevel -= Time.deltaTime * _changeDecreaseThrusterChargeBy;
             _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); //Change thruster bar UI: reduce 
-            Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
+            //Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
 
             if (_thrusterChargeLevel <= 0)
             {
@@ -223,7 +223,7 @@ public class Player : MonoBehaviour
             yield return null;
             _thrusterChargeLevel +=  Time.deltaTime * _changeIncreaseThrusterChargeBy; //
             _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); // Change thruster bar UI: increase
-            Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
+            //Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
         }
 
         if (_thrusterChargeLevel >= _thrusterChargeLevelMax)

@@ -16,20 +16,40 @@ public class SpawnManager : MonoBehaviour
     float _randomY;
     [SerializeField]
     float _randomZangle;
-    float _waitTime = 2.0f; // Enemy spawning looping wait time between enemies
+    float _waitTimeEnemy = 5.0f; // Enemy spawning looping wait time between individual enemies
+    float _waitTimeWaves = 7.0f; // Waves spawning looping wait time between waves of enemies
     float _waitTimeWideShot = 5.0f;
     float _randomWaitTime;
     private bool _stopSpawning = false;
+    int _maxEnemies = 1;
+    int _enemiesSpawned = 0;
 
-    // Start is called before the first frame update
+    private GameManager _gameManager;
+    
     void Start()
     {
+        _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+
+        if (_gameManager == null)
+        {
+            Debug.LogError("SpawnManager::Start() Called. The Game Manager is NULL.");
+        }
+
+        Debug.Log("SpawnManager::Start() Called. _stopSpawning=" + _stopSpawning.ToString());
 
     }
 
-    public void StartSpawning()
+    private void Update()
     {
-        StartCoroutine(spawnEnemyRoutine());
+        Debug.Log("SpawnManager::Update() Called. _stopSpawning=" + _stopSpawning.ToString());
+    }
+
+    public void StartSpawning(int _waveID)
+    {
+        Debug.Log("SpawnManager::StartSpawning() Called");
+        _stopSpawning = false;
+        GetWaveInfo(_waveID);
+        StartCoroutine(spawnEnemyRoutine(_waitTimeEnemy));
         StartCoroutine(spawnRandomPowerupRoutine());
         StartCoroutine(spawnWideShotPowerupRoutine());
     }
@@ -39,22 +59,79 @@ public class SpawnManager : MonoBehaviour
         _stopSpawning = true;
     }
 
-    IEnumerator spawnEnemyRoutine()
+    private void GetWaveInfo(int _waveID)
     {
-        yield return new WaitForSeconds(3.0f); // Initial wait at beginning of game
+        Debug.Log("SpawnManager::GetWaveInfo() Called");
+        WaitForSeconds _respawnTime = new WaitForSeconds(10);
+        //int _enemyPool = _enemyPrefab.Length;
 
-        //while loop (infinite loop)
-        while (_stopSpawning == false)
+        switch (_waveID)
         {
-            // Instantiate enemy prefab
-            _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
-            _randomY = Random.Range(_yPositionLimit/2, _yPositionLimit);
-            _randomZangle = Random.Range(-45f,45f);
-            Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
-            GameObject newEnemy = Instantiate(_enemyPrefab, spawnPosition, Quaternion.Euler(0, 0, _randomZangle));
-            newEnemy.transform.parent = _enemyContainer.transform;
-            // yield wait for 5 seconds
-            yield return new WaitForSeconds(_waitTime);
+            case 1:
+                //_enemyPool = 1;
+                _maxEnemies = 2;
+                _waitTimeEnemy = 3.5f;
+                break;
+            case 2:
+                //_enemyPool = 3;
+                _maxEnemies = 4;
+                _waitTimeEnemy = 3.0f;
+                break;
+            case 3:
+                //_enemyPool = 4;
+                _maxEnemies = 6;
+                _waitTimeEnemy = 2.5f;
+                break;
+            case 4:
+                //_enemyPool = 5;
+                _maxEnemies = 8;
+                _waitTimeEnemy = 2.0f;
+                break;
+            case 5:
+                //_enemyPool = 5;
+                _maxEnemies = 10;
+                _waitTimeEnemy = 1.0f;
+                break;
+        }
+
+    }
+
+    IEnumerator spawnEnemyRoutine(float _waitTimeEnemy)
+    {
+        Debug.Log("SpawnManager::spawnEnemyRoutine() Called");
+        //yield return new WaitForSeconds(3.0f); // Initial wait at beginning of game
+
+        while (!_stopSpawning)
+        {
+            for (int i = 0; i < _maxEnemies; i++)
+            {
+                yield return new WaitForSeconds(_waitTimeEnemy);
+
+                if (!_stopSpawning)
+                {
+                    // Instantiate enemy prefab
+                    float _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
+                    _randomZangle = Random.Range(-45f,45f);
+                    Vector3 spawnPosition = new Vector3(_randomX, _yPositionLimit, 0);
+                    GameObject newEnemy = Instantiate(_enemyPrefab, spawnPosition, Quaternion.Euler(0, 0, _randomZangle));
+                    _enemiesSpawned++;
+                    newEnemy.transform.parent = _enemyContainer.transform;
+                }
+                
+            }
+
+            yield return new WaitForSeconds(_waitTimeWaves);
+        }
+    }
+
+    private void ClearEnemies()
+    {
+        Debug.Log("SpawnManager::ClearEnemies() Called");
+        Enemy[] _activeEnemies = _enemyContainer.GetComponentsInChildren<Enemy>();
+
+        foreach (Enemy _enemy in _activeEnemies)
+        {
+            _enemy.ClearField();
         }
     }
 

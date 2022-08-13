@@ -30,6 +30,7 @@ public class UIManager : MonoBehaviour
 
     public Text _waveIDDisplay;
     public Text _waveTimeDisplay;
+    public GameObject _waveDisplay;
     public bool _waveEnded = false;
 
     private GameManager _gameManager;
@@ -136,6 +137,16 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void WaveDisplayOn ()
+    {
+        _waveDisplay.SetActive(true);
+    }
+
+    public void WaveDisplayOff()
+    {
+        _waveDisplay.SetActive(false);
+    }
+
     public void WaveIDUpdate( int waveID)
     {
         _waveIDDisplay.text = "Wave " + waveID.ToString();
@@ -143,10 +154,29 @@ public class UIManager : MonoBehaviour
 
     public void WaveTimeUpdate( float _seconds)
     {
-        float _waveTime = Math.RoundToInt(_seconds);
+        float _waveTime = Mathf.RoundToInt(_seconds);
         _waveTimeDisplay.text = _waveTime.ToString();
 
+        if (_waveTime > 0)
+        {
+            _waveEnded = false;
+        }
+        else
+        {
+            _waveEnded = true;
+            StartCoroutine(WaveDisplayFlickerRoutine());
+        }
 
+    }
 
+    private IEnumerator WaveDisplayFlickerRoutine()
+    {
+        while ( _waveEnded )
+        {
+            yield return new WaitForSeconds(_textFlickerDelay);
+            _waveDisplay.SetActive(false);
+            yield return new WaitForSeconds(_textFlickerDelay);
+            _waveDisplay.SetActive(true);
+        }
     }
 }

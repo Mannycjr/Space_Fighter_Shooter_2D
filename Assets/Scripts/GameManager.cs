@@ -11,8 +11,8 @@ public class GameManager : MonoBehaviour
     private UIManager _uiManagerScript;
 
     private SpawnManager _spawnManager;
-    private int _waveID = 0;
-    private float _waveTime = 20.0f;
+    public int _waveID = 0; // Other scripts need to access wave level number
+    private float _waveTime = 5.0f;
     private float _holdtime = 2.0f;
 
     // Start is called before the first frame update
@@ -56,19 +56,21 @@ public class GameManager : MonoBehaviour
 
     public void StartSpawning()
     {
+        Debug.Log("GameManager::StartSpawning() Called");
         _waveID++;
         _waveTime += 10;
-        
-        if (_waveID > 10)
+
+        /*        */
+        if (_waveID > 5)
         {
             Debug.Log("You Win!");
             return;
         }
 
+        _uiManagerScript.WaveDisplayOn();
         _uiManagerScript.WaveIDUpdate(_waveID);
-        _spawnManager.StartSpawning(_waveID);
-        _uiManagerScript.WaveTimeUpdate(_waveTime);
         StartCoroutine(WaveCountdown(_waveTime));
+        _spawnManager.StartSpawning(_waveID);
     }
 
     private IEnumerator WaveCountdown(float _time)
@@ -79,9 +81,9 @@ public class GameManager : MonoBehaviour
             _uiManagerScript.WaveTimeUpdate(_time);
             yield return new WaitForEndOfFrame();
         }
-        _spawnManager.stopSpawning();
+        _spawnManager.StopSpawning();
 
-        //yield return _holdtime;
+        yield return _holdtime;
         StartSpawning();
 
     }

@@ -25,11 +25,15 @@ public class Enemy : MonoBehaviour
     private AudioSource _sfxExplosion;
 
     private float _fireRate = 3.0f;
-    private float _canFire = -1;
+    private float _canFireAtTime = -1;
+
+    private bool _waveEnded = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Enemy::Start() Called. _waveEnded=" + _waveEnded.ToString());
+
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
 
         if (_spawnManager == null)
@@ -72,12 +76,13 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         CalculateMovement();
 
-        if (Time.time > _canFire)
+        if (Time.time > _canFireAtTime)
         {
             _fireRate = Random.Range(3f, 7f);
-            _canFire = Time.time + _fireRate;
+            _canFireAtTime = Time.time + _fireRate;
             Vector3 _newLaserSpawnPos = transform.position + new Vector3(0,-1,0); // offset laser spawn position down
 
             GameObject enemyLaser = Instantiate(_laserPrefab, _newLaserSpawnPos, Quaternion.identity);
@@ -92,26 +97,42 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void ClearField()
+    {
+        //_speed = 4.0f; // enemy speed reset
+        _canFireAtTime = -1;
+        _waveEnded = true;
+    }
+
     void CalculateMovement()
     {
-        // move down 4 meters per second
+        // move down at speed "_speed"
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
 
-        // if bottom of screen and still alive
-        // respawn at top with a new random x position
         if (transform.position.y <= -_verticalPositionLimit)
         {
-            if (_spawnManager.get_stopSpawning() == "false")
+            if (_explosionAnimation.GetCurrentAnimatorStateInfo(0).IsName("enemy_destroyed_anim") || _waveEnded == true )
             {
-                moveToTopRandomXPosition();
-            }
-            else
-            {
-                Debug.Log("Player is dead. No need this enemy.");
                 Destroy(this.gameObject);
             }
+            // if bottom of screen and still alive
+            // respawn at top with a new random x position
+            else
+            {
+                if (_spawnManager.get_stopSpawning() == "false")
+                {
+                    moveToTopRandomXPosition();
+                }
+                else
+                {
+                    Debug.Log("Player is dead. No need this enemy.");
+                    Destroy(this.gameObject);
+                }
 
+            }
         }
+
+
     }
 
     private void moveToTopRandomXPosition ()
@@ -121,6 +142,8 @@ public class Enemy : MonoBehaviour
         _randomHorizontalPosition = Random.Range(-_horizontalPositionLimit, _horizontalPositionLimit);
         transform.position = new Vector3(_randomHorizontalPosition, _verticalPositionLimit, 0);
     }
+
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -151,6 +174,7 @@ public class Enemy : MonoBehaviour
         }
 
     }
+
 
     private void DestroyEnemy()
     {
