@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     private UIManager _uiManagerScript;
 
     private SpawnManager _spawnManager;
-    public int _waveID = 0; // Other scripts need to access wave level number
+    public int _waveID = 0; 
     private float _waveTime = 5.0f;
     private float _holdtime = 2.0f;
 
@@ -60,7 +60,6 @@ public class GameManager : MonoBehaviour
         _waveID++;
         _waveTime += 10;
 
-        /*        */
         if (_waveID > 5)
         {
             Debug.Log("You Win!");

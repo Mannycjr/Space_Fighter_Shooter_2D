@@ -11,7 +11,6 @@ public class Asteroid : MonoBehaviour
     private GameObject _explosionPrefab;
     private GameManager _gameManager;
 
-    // Start is called before the first frame update
     void Start()
     {
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();

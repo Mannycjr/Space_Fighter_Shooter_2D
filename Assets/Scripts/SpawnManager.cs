@@ -16,16 +16,17 @@ public class SpawnManager : MonoBehaviour
     float _randomY;
     [SerializeField]
     float _randomZangle;
-    float _waitTimeEnemy = 5.0f; // Enemy spawning looping wait time between individual enemies
-    float _waitTimeWaves = 7.0f; // Waves spawning looping wait time between waves of enemies
     float _waitTimeWideShot = 5.0f;
     float _randomWaitTime;
-    private bool _stopSpawning = false;
+
+    float _waitTimeEnemy = 5.0f; // Enemy spawning looping wait time between individual enemies
+    float _waitTimeWaves = 7.0f; // Waves spawning looping wait time between waves of enemies
     int _maxEnemies = 1;
     int _enemiesSpawned = 0;
-
     private GameManager _gameManager;
-    
+    private bool _stopSpawning = false;
+
+
     void Start()
     {
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
@@ -57,44 +58,54 @@ public class SpawnManager : MonoBehaviour
     public void StopSpawning()
     {
         _stopSpawning = true;
+        ClearEnemies();
+    }
+
+    private void ClearEnemies()
+    {
+        Debug.Log("SpawnManager::ClearEnemies() Called");
+        Enemy[] _activeEnemies = _enemyContainer.GetComponentsInChildren<Enemy>();
+
+        foreach (Enemy _enemy in _activeEnemies)
+        {
+            _enemy.ClearField();
+        }
     }
 
     private void GetWaveInfo(int _waveID)
     {
         Debug.Log("SpawnManager::GetWaveInfo() Called");
         WaitForSeconds _respawnTime = new WaitForSeconds(10);
-        //int _enemyPool = _enemyPrefab.Length;
+ 
 
         switch (_waveID)
         {
             case 1:
-                //_enemyPool = 1;
                 _maxEnemies = 2;
                 _waitTimeEnemy = 3.5f;
                 break;
             case 2:
-                //_enemyPool = 3;
                 _maxEnemies = 4;
                 _waitTimeEnemy = 3.0f;
                 break;
             case 3:
-                //_enemyPool = 4;
                 _maxEnemies = 6;
                 _waitTimeEnemy = 2.5f;
                 break;
             case 4:
-                //_enemyPool = 5;
                 _maxEnemies = 8;
                 _waitTimeEnemy = 2.0f;
                 break;
             case 5:
-                //_enemyPool = 5;
                 _maxEnemies = 10;
                 _waitTimeEnemy = 1.0f;
                 break;
         }
 
     }
+
+
+    //int _enemyPool = _enemyPrefab.Length;
 
     IEnumerator spawnEnemyRoutine(float _waitTimeEnemy)
     {
@@ -121,17 +132,6 @@ public class SpawnManager : MonoBehaviour
             }
 
             yield return new WaitForSeconds(_waitTimeWaves);
-        }
-    }
-
-    private void ClearEnemies()
-    {
-        Debug.Log("SpawnManager::ClearEnemies() Called");
-        Enemy[] _activeEnemies = _enemyContainer.GetComponentsInChildren<Enemy>();
-
-        foreach (Enemy _enemy in _activeEnemies)
-        {
-            _enemy.ClearField();
         }
     }
 

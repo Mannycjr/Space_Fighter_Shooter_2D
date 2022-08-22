@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
     private Sprite[] _livesSprites;
     [SerializeField]
     private Text _GameOverText;
-    private float _textFlickerDelay = 0.25f;
+    private float _textFlickerDelay = 0.15f;
     [SerializeField]
     private Text _RestartText;
     [SerializeField]
