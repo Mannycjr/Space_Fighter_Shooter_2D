@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -388,6 +389,12 @@ public class Player : MonoBehaviour
     public void RefillAmmo()
     {
         _ammoCount = 15; // Max ammo count hard-coded to 15
+        _uiManagerScript.UpdateAmmo(_ammoCount);
+    }
+
+    public void NoAmmo()
+    {
+        _ammoCount = 0; 
         _uiManagerScript.UpdateAmmo(_ammoCount);
     }
 

@@ -10,11 +10,13 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyContainer;
     [SerializeField]
     private GameObject[] _powerups; // 0 = Tripleshot. 1 = Speed. 2 = Shields. 3 = Ammo. 4 = Health. 5 = Wide Shot.
+    [SerializeField]
+    private GameObject[] _powerdowns; // 0 = No Ammo.
     float _yPositionLimit = 6f;
     float _xPositionLimit = 10.0f;
     float _randomX;
     float _randomY;
-    [SerializeField]
+
     float _randomZangle;
     float _waitTimeWideShot = 5.0f;
     float _randomWaitTime;
@@ -168,6 +170,25 @@ public class SpawnManager : MonoBehaviour
             _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);
             Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
             GameObject newPowerup = Instantiate(_powerups[5], spawnPosition, Quaternion.identity); // 5 = Wide Shot.
+
+            yield return new WaitForSeconds(_randomWaitTime);
+        }
+    }
+
+    // Core: Negative Powerup: No Ammo
+    IEnumerator spawnNoAmmoPowerdownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+
+        while (_stopSpawning == false)
+        {
+            // Every 10-15 seconds spawn in a powerup
+            _randomWaitTime = Random.Range(5.0f, 5.0f);
+
+            _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
+            _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);
+            Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
+            GameObject newPowerup = Instantiate(_powerdowns[0], spawnPosition, Quaternion.identity); // 0 = No Ammo.
 
             yield return new WaitForSeconds(_randomWaitTime);
         }

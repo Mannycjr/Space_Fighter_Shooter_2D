@@ -99,7 +99,6 @@ public class Enemy : MonoBehaviour
 
     public void ClearField()
     {
-        //_speed = 4.0f; // enemy speed reset
         _canFireAtTime = -1;
         _waveEnded = true;
     }

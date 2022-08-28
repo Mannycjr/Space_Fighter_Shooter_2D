@@ -13,24 +13,6 @@ public class Powerup : MonoBehaviour
 
     [SerializeField]
     private AudioClip _sfxClipPowerup;
-    //private Renderer _rend;
-
-    /*
-    void Start()
-    {
-        _sfxPowerup = GetComponent<AudioSource>();
-        if (_sfxPowerup == null)
-        {
-            Debug.LogError("Powerup::Start() Called. _sfxPowerup is NULL.");
-        }
-
-        _rend = GetComponent<Renderer>();
-        if (_rend == null)
-        {
-            Debug.LogError("Powerup::Start() Called. _rend is NULL.");
-        }
-    }
-    */
     
     // Update is called once per frame
     void Update()
