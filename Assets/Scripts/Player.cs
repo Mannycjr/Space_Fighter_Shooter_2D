@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -200,7 +201,7 @@ public class Player : MonoBehaviour
         {
             _thrusterChargeLevel -= Time.deltaTime * _changeDecreaseThrusterChargeBy;
             _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); //Change thruster bar UI: reduce 
-            Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
+            //Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
 
             if (_thrusterChargeLevel <= 0)
             {
@@ -225,7 +226,7 @@ public class Player : MonoBehaviour
             yield return null;
             _thrusterChargeLevel +=  Time.deltaTime * _changeIncreaseThrusterChargeBy; //
             _uiManagerScript.UpdateThrustersSlider(_thrusterChargeLevel); // Change thruster bar UI: increase
-            Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
+            //Debug.Log("_thrusterChargeLevel=" + _thrusterChargeLevel);
         }
 
         if (_thrusterChargeLevel >= _thrusterChargeLevelMax)
@@ -391,6 +392,12 @@ public class Player : MonoBehaviour
     {
         _ammoCount = _maxAmmo; // ammo count reset to maximum ammo setting
         _uiManagerScript.UpdateAmmo(_ammoCount,_maxAmmo);
+    }
+
+    public void NoAmmo()
+    {
+        _ammoCount = 0; 
+        _uiManagerScript.UpdateAmmo(_ammoCount);
     }
 
     // method to add 10 to the score

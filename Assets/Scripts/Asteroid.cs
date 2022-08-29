@@ -9,12 +9,16 @@ public class Asteroid : MonoBehaviour
 
     [SerializeField]
     private GameObject _explosionPrefab;
-    private SpawnManager _spawnManager;
+    private GameManager _gameManager;
 
-    // Start is called before the first frame update
     void Start()
     {
-        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+
+        if (_gameManager == null)
+        {
+            Debug.LogError("Asteroid::Start() Called. The Game Manager is NULL.");
+        }
     }
 
     // Update is called once per frame
@@ -32,7 +36,7 @@ public class Asteroid : MonoBehaviour
         if (other.tag == "Laser")
         {
             Destroy(other.gameObject);
-            _spawnManager.StartSpawning();
+            _gameManager.StartSpawning(); // Start the game
             DestroyAsteroid();
         }
 
@@ -43,7 +47,7 @@ public class Asteroid : MonoBehaviour
             {
                 player.Damage();
             }
-            _spawnManager.StartSpawning();
+            _gameManager.StartSpawning(); // Start the game
             DestroyAsteroid();
         }
     }
