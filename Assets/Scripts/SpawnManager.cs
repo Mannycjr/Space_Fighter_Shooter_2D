@@ -9,9 +9,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
-    private GameObject[] _powerups; // 0 = Tripleshot. 1 = Speed. 2 = Shields. 3 = Ammo. 4 = Health. 5 = Wide Shot.
-    [SerializeField]
-    private GameObject[] _powerdowns; // 0 = No Ammo.
+    private GameObject[] _powerUpsDowns; // 0 = Tripleshot. 1 = Speed. 2 = Shields. 3 = Ammo. 4 = Health. 5 = No Ammo. 6 = Wide Shot.
+    int _wideShotIndex;
     float _yPositionLimit = 6f;
     float _xPositionLimit = 10.0f;
     float _randomX;
@@ -38,8 +37,11 @@ public class SpawnManager : MonoBehaviour
             Debug.LogError("SpawnManager::Start() Called. The Game Manager is NULL.");
         }
 
-        Debug.Log("SpawnManager::Start() Called. _stopSpawning=" + _stopSpawning.ToString());
+        _wideShotIndex = _powerUpsDowns.Length-1;
 
+        Debug.Log("SpawnManager::Start() Called. _stopSpawning=" + _stopSpawning.ToString() + " _wideShotIndex=" + _wideShotIndex);
+
+        
     }
 
     private void Update()
@@ -149,8 +151,8 @@ public class SpawnManager : MonoBehaviour
             _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
             _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);
             Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
-            int randomPowerUp = Random.Range(0, (_powerups.Length - 1)); // Do not include 5 = Wide Shot.
-            GameObject newPowerup = Instantiate(_powerups[randomPowerUp], spawnPosition, Quaternion.identity);
+            int randomPowerUp = Random.Range(0, (_powerUpsDowns.Length)); 
+            GameObject newPowerup = Instantiate(_powerUpsDowns[randomPowerUp], spawnPosition, Quaternion.identity);
 
             yield return new WaitForSeconds(_randomWaitTime);
         }
@@ -159,6 +161,7 @@ public class SpawnManager : MonoBehaviour
     // Feature: Secondary Powerup: WideShot
     IEnumerator spawnWideShotPowerupRoutine()
     {
+        Debug.Log("SpawnManager::spawnWideShotPowerupRoutine() Called");
         yield return new WaitForSeconds(10.0f);
 
         while (_stopSpawning == false)
@@ -169,26 +172,7 @@ public class SpawnManager : MonoBehaviour
             _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
             _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);
             Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
-            GameObject newPowerup = Instantiate(_powerups[5], spawnPosition, Quaternion.identity); // 5 = Wide Shot.
-
-            yield return new WaitForSeconds(_randomWaitTime);
-        }
-    }
-
-    // Core: Negative Powerup: No Ammo
-    IEnumerator spawnNoAmmoPowerdownRoutine()
-    {
-        yield return new WaitForSeconds(5.0f);
-
-        while (_stopSpawning == false)
-        {
-            // Every 10-15 seconds spawn in a powerup
-            _randomWaitTime = Random.Range(5.0f, 5.0f);
-
-            _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
-            _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);
-            Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
-            GameObject newPowerup = Instantiate(_powerdowns[0], spawnPosition, Quaternion.identity); // 0 = No Ammo.
+            GameObject newPowerup = Instantiate(_powerUpsDowns[_wideShotIndex], spawnPosition, Quaternion.identity); 
 
             yield return new WaitForSeconds(_randomWaitTime);
         }

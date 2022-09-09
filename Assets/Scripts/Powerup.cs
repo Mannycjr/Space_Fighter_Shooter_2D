@@ -8,7 +8,7 @@ public class Powerup : MonoBehaviour
     private float _speed = 3.0f;
     float _verticalPositionLimit = 6f;
     private SpawnManager _spawnManager_Powerups; // get script SpawnManager of GameObject Spawn_Manager
-    [SerializeField] // 0 = Triple Shot; 1 = Speed; 2 = Shields; 3 = Ammo; 4 = Health; 5 = Wide Shot;
+    [SerializeField] // 0 = Triple Shot; 1 = Speed; 2 = Shields; 3 = Ammo; 4 = Health; 5 = No Ammo; 6 = Wide Shot;
     private int _powerupID;
 
     [SerializeField]
@@ -61,6 +61,10 @@ public class Powerup : MonoBehaviour
                         player.AddLife();
                         break;
                     case 5:
+                        Debug.Log("NoAmmo powerdown");
+                        player.NoAmmo();
+                        break;
+                    case 6:
                         Debug.Log("WideShot powerup");
                         player.WideShotActive();
                         break;
@@ -68,10 +72,8 @@ public class Powerup : MonoBehaviour
                         Debug.Log("Default powerup");
                         break;
                 }
-                
+
             }
-            // turn off visibility
-            //_rend.enabled = false;
 
             Destroy(this.gameObject);
         }

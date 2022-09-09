@@ -397,7 +397,7 @@ public class Player : MonoBehaviour
     public void NoAmmo()
     {
         _ammoCount = 0; 
-        _uiManagerScript.UpdateAmmo(_ammoCount);
+        _uiManagerScript.UpdateAmmo(_ammoCount,_maxAmmo);
     }
 
     // method to add 10 to the score
