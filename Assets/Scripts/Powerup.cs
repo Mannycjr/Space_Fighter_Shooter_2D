@@ -11,9 +11,8 @@ public class Powerup : MonoBehaviour
     [SerializeField] // 0 = Triple Shot; 1 = Speed; 2 = Shields; 3 = Ammo; 4 = Health; 5 = No Ammo; 6 = Wide Shot;
     private int _powerupID;
 
-    [SerializeField]
-    private AudioClip _sfxClipPowerup;
-    
+    [SerializeField] private AudioClip _sfxClipPowerup;
+
     // Update is called once per frame
     void Update()
     {
