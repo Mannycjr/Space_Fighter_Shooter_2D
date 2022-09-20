@@ -151,7 +151,7 @@ public class SpawnManager : MonoBehaviour
             _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
             _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);
             Vector3 spawnPosition = new Vector3(_randomX, _randomY, 0);
-            int randomPowerUp = Random.Range(0, (_powerUpsDowns.Length)); 
+            int randomPowerUp = Random.Range(0, (_powerUpsDowns.Length-1)); // Exclude WideShot powerup ID=6
             GameObject newPowerup = Instantiate(_powerUpsDowns[randomPowerUp], spawnPosition, Quaternion.identity);
 
             yield return new WaitForSeconds(_randomWaitTime);
