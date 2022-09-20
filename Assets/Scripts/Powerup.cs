@@ -71,9 +71,7 @@ public class Powerup : MonoBehaviour
                         Debug.Log("Default powerup");
                         break;
                 }
-
             }
-
             Destroy(this.gameObject);
         }
     }
