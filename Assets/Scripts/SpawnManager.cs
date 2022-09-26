@@ -8,8 +8,10 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyPrefab;
     [SerializeField]
     private GameObject _enemyContainer;
-    [SerializeField]
-    private GameObject[] _powerUpsDowns; // 0 = Tripleshot. 1 = Speed. 2 = Shields. 3 = Ammo. 4 = Health. 5 = No Ammo. 6 = Wide Shot.
+
+    // 0 = Tripleshot. 1 = Speed. 2 = Shields. 3 = Ammo. 4 = Health. 5 = No Ammo. 6 = Wide Shot.
+    [SerializeField] private GameObject[] _powerUpsDowns; 
+
     int _wideShotIndex;
     float _yPositionLimit = 6f;
     float _xPositionLimit = 10.0f;
@@ -145,8 +147,8 @@ public class SpawnManager : MonoBehaviour
 
         while (_stopSpawning == false)
         {
-            // Every 3-7 seconds spawn in a powerup
-            _randomWaitTime = Random.Range(2.0f, 5.0f);
+            // Every 4-8 seconds spawn in a powerup
+            _randomWaitTime = Random.Range(4.0f, 8.0f);
 
             _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
             _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);
@@ -167,7 +169,7 @@ public class SpawnManager : MonoBehaviour
         while (_stopSpawning == false)
         {
             // Every 10-15 seconds spawn in a powerup
-            _randomWaitTime = Random.Range(12.0f, 20.0f);
+            _randomWaitTime = Random.Range(15.0f, 20.0f);
 
             _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
             _randomY = Random.Range(_yPositionLimit / 2, _yPositionLimit);
