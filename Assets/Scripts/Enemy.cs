@@ -18,8 +18,6 @@ public class Enemy : MonoBehaviour
     private Animator _explosionAnimation;
     private float _explosionAnimLength = 2.6f;
 
-    //private BoxCollider2D _boxCollider;
-
     [SerializeField]
     private AudioClip _sfxClipExplosion;
     private AudioSource _sfxExplosion;
@@ -28,6 +26,8 @@ public class Enemy : MonoBehaviour
     private float _canFireAtTime = -1;
 
     private bool _waveEnded = false;
+
+    public int _enemyID = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -54,14 +54,6 @@ public class Enemy : MonoBehaviour
             Debug.LogError("Enemy::Start() Called. The enemy explosion anim controller is NULL.");
         }
 
-        /*
-        _boxCollider = GetComponent<BoxCollider2D>();
-        if (_boxCollider == null)
-        {
-            Debug.LogError("Enemy::Start() Called. The enemy Box Collider 2D is NULL.");
-        }
-        */
-
         _sfxExplosion = GetComponent<AudioSource>();
         if (_sfxExplosion == null)
         {
@@ -77,13 +69,27 @@ public class Enemy : MonoBehaviour
     void Update()
     {
 
-        CalculateMovement();
+        switch (_enemyID)
+        {
+            default:
+                CalculateMovementRegular();
+                FireLaserRegular();
+                break;
+            case 1: // big laser
+                break;
+            case 2: // zigzag movement
+                break;
+        }
 
+    }
+
+    private void FireLaserRegular()
+    {
         if (Time.time > _canFireAtTime)
         {
             _fireRate = Random.Range(3f, 7f);
             _canFireAtTime = Time.time + _fireRate;
-            Vector3 _newLaserSpawnPos = transform.position + new Vector3(0,-1,0); // offset laser spawn position down
+            Vector3 _newLaserSpawnPos = transform.position + new Vector3(0, -1, 0); // offset laser spawn position down
 
             GameObject enemyLaser = Instantiate(_laserPrefab, _newLaserSpawnPos, Quaternion.identity);
             Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
@@ -91,7 +97,7 @@ public class Enemy : MonoBehaviour
             for (int i = 0; i < lasers.Length; i++)
             {
                 lasers[i].AssignEnemyLaser();
-                
+
             }
 
         }
@@ -103,7 +109,7 @@ public class Enemy : MonoBehaviour
         _waveEnded = true;
     }
 
-    void CalculateMovement()
+    void CalculateMovementRegular()
     {
         // move down at speed "_speed"
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
@@ -179,7 +185,6 @@ public class Enemy : MonoBehaviour
     {
         // trigger anim
         _explosionAnimation.SetTrigger("OnEnemyDeath");
-        //_boxCollider.enabled = false; //Prevent more damage 
         Destroy(GetComponent<Collider2D>()); //Saves RAM to just destroy rather than disable.
         _speed = 0;
         _sfxExplosion.Play(0);
