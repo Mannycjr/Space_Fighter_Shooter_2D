@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
+    public bool _isBigLaser = false;
+
     [SerializeField]
     private int _speed = 8;
     private int _position_limit = 8;
@@ -12,13 +14,16 @@ public class Laser : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_isEnemyLaser == false)
+        if (_isBigLaser == false)
         {
-            MoveUp();
-        }
-        else
-        {
-            MoveDown();
+            if (_isEnemyLaser == false)
+            {
+                MoveUp();
+            }
+            else
+            {
+                MoveDown();
+            }
         }
 
     }
@@ -63,6 +68,11 @@ public class Laser : MonoBehaviour
         _isEnemyLaser = true;
     }
 
+    public void AssignEnemyBigLaser()
+    {
+        _isBigLaser = true;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player" && _isEnemyLaser == true)
@@ -75,4 +85,6 @@ public class Laser : MonoBehaviour
             }
         }
     }
+
+
 }

@@ -2127,8 +2127,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ef7dc3d54fab9b469e3dcad84a0b303, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 5400183557130829806, guid: c1a163dae03a87546afb533445db8739,
-    type: 3}
+  _enemiesPrefabs:
+  - {fileID: 5400183557130829806, guid: c1a163dae03a87546afb533445db8739, type: 3}
+  - {fileID: 2410871756386631512, guid: f24dbd4d2f55f8b4ca50ac288b834399, type: 3}
   _enemyContainer: {fileID: 439383400}
   _powerUpsDowns:
   - {fileID: 3410923844276339495, guid: ddfa07b1838f88b44a97a3f961b5ecf2, type: 3}

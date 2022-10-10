@@ -267,7 +267,7 @@ public class Player : MonoBehaviour
 
             _ammoCount--;
             _uiManagerScript.UpdateAmmo(_ammoCount,_maxAmmo);
-            Debug.Log("_ammoCount=" + _ammoCount);
+            //Debug.Log("_ammoCount=" + _ammoCount);
             // Play Laser SFX
             _sfxAudioSource.Play(0);
 

@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour
 
     private bool _waveEnded = false;
 
-    public int _enemyID = 0;
+    public int _enemyID;
 
     // Start is called before the first frame update
     void Start()
@@ -76,6 +76,8 @@ public class Enemy : MonoBehaviour
                 FireLaserRegular();
                 break;
             case 1: // big laser
+                CalculateMovementRegular();
+                FireLaserBeamLarge();
                 break;
             case 2: // zigzag movement
                 break;
@@ -85,6 +87,7 @@ public class Enemy : MonoBehaviour
 
     private void FireLaserRegular()
     {
+        Debug.Log("Enemy::FireLaserRegular: Begin");
         if (Time.time > _canFireAtTime)
         {
             _fireRate = Random.Range(3f, 7f);
@@ -96,11 +99,34 @@ public class Enemy : MonoBehaviour
 
             for (int i = 0; i < lasers.Length; i++)
             {
-                lasers[i].AssignEnemyLaser();
+                lasers[i].AssignEnemyLaser(); //enable enemy movement down
 
             }
 
         }
+    }
+
+    private void FireLaserBeamLarge()
+    {
+        Debug.Log("Enemy::FireLaserRegular: Begin");
+        if (Time.time > _canFireAtTime)
+        {
+            _fireRate = Random.Range(3f, 7f);
+            _canFireAtTime = Time.time + _fireRate;
+            Vector3 _newLaserSpawnPos = transform.position + new Vector3(0, -5.65f, 0); // offset Large laser spawn position down
+
+            GameObject enemyLaserBeam = Instantiate(_laserPrefab, _newLaserSpawnPos, Quaternion.identity);
+            enemyLaserBeam.transform.parent = this.transform;
+
+            Laser[] laserElement = enemyLaserBeam.GetComponentsInChildren<Laser>();
+
+
+            for (int i = 0; i < laserElement.Length; i++)
+            {
+                laserElement[i].AssignEnemyBigLaser(); 
+            }
+        }
+
     }
 
     public void ClearField()
