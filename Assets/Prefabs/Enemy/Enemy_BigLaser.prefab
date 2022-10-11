@@ -264,4 +264,5 @@ MonoBehaviour:
   _laserPrefab: {fileID: 1241247450412071731, guid: 245b39af58032c44e83e38a9374c67ed,
     type: 3}
   _sfxClipExplosion: {fileID: 8300000, guid: 5ee07e8c660cefd44ada013e9232f499, type: 3}
-  _enemyID: 1
+  enemyID: 1
+  _BeamLargeYpos: -6

@@ -27,7 +27,11 @@ public class Enemy : MonoBehaviour
 
     private bool _waveEnded = false;
 
-    public int _enemyID;
+    public int enemyID; // 0 = Default. 1 = Big Laser. 2 = Zigzag movement
+
+    private GameObject _enemyLaserBeam;
+
+    [SerializeField] private float _BeamLargeYpos;
 
     // Start is called before the first frame update
     void Start()
@@ -69,7 +73,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
 
-        switch (_enemyID)
+        switch (enemyID)
         {
             default:
                 CalculateMovementRegular();
@@ -99,7 +103,7 @@ public class Enemy : MonoBehaviour
 
             for (int i = 0; i < lasers.Length; i++)
             {
-                lasers[i].AssignEnemyLaser(); //enable enemy movement down
+                lasers[i].AssignEnemyLaser();
 
             }
 
@@ -113,16 +117,17 @@ public class Enemy : MonoBehaviour
         {
             _fireRate = Random.Range(3f, 7f);
             _canFireAtTime = Time.time + _fireRate;
-            Vector3 _newLaserSpawnPos = transform.position + new Vector3(0, -5.65f, 0); // offset Large laser spawn position down
+            Vector3 _newLaserSpawnPos = transform.position + new Vector3(0, _BeamLargeYpos, 0); // offset Large laser spawn position down
 
-            GameObject enemyLaserBeam = Instantiate(_laserPrefab, _newLaserSpawnPos, Quaternion.identity);
-            enemyLaserBeam.transform.parent = this.transform;
+            _enemyLaserBeam = Instantiate(_laserPrefab, _newLaserSpawnPos, Quaternion.identity);
+            _enemyLaserBeam.transform.parent = this.transform;
 
-            Laser[] laserElement = enemyLaserBeam.GetComponentsInChildren<Laser>();
+            Laser[] laserElement = _enemyLaserBeam.GetComponentsInChildren<Laser>();
 
 
             for (int i = 0; i < laserElement.Length; i++)
             {
+                laserElement[i].AssignEnemyLaser();
                 laserElement[i].AssignEnemyBigLaser(); 
             }
         }
@@ -209,6 +214,14 @@ public class Enemy : MonoBehaviour
 
     private void DestroyEnemy()
     {
+        // Destory Big Laser first
+        if (enemyID == 1 && _enemyLaserBeam != null)
+        {
+            //Destroy(_enemyLaserBeam.gameObject);
+            Destroy(_enemyLaserBeam);
+            Debug.Log("Enemy::DestroyEnemy: Destroyed Big Laser Beam ");
+        }
+
         // trigger anim
         _explosionAnimation.SetTrigger("OnEnemyDeath");
         Destroy(GetComponent<Collider2D>()); //Saves RAM to just destroy rather than disable.
@@ -216,5 +229,8 @@ public class Enemy : MonoBehaviour
         _sfxExplosion.Play(0);
 
         Destroy(this.gameObject, _explosionAnimLength);
+        Debug.Log("Enemy::DestroyEnemy: Destroyed Enemy ");
+
+
     }
 }
