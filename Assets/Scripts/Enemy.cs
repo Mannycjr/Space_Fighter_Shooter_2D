@@ -120,7 +120,9 @@ public class Enemy : MonoBehaviour
             Vector3 _newLaserSpawnPos = transform.position + new Vector3(0, _BeamLargeYpos, 0); // offset Large laser spawn position down
 
             _enemyLaserBeam = Instantiate(_laserPrefab, _newLaserSpawnPos, Quaternion.identity);
+            Debug.Log("Enemy::FireLaserRegular: _enemyLaserBeam="+ _enemyLaserBeam);
             _enemyLaserBeam.transform.parent = this.transform;
+
 
             Laser[] laserElement = _enemyLaserBeam.GetComponentsInChildren<Laser>();
 
@@ -166,6 +168,16 @@ public class Enemy : MonoBehaviour
                 }
 
             }
+        }
+        
+        // wrap around enemy horizontally
+        if (transform.position.x > _horizontalPositionLimit)
+        {
+            transform.position = new Vector3(-_horizontalPositionLimit, transform.position.y, 0);
+        }
+        else if (transform.position.x < -_horizontalPositionLimit)
+        {
+            transform.position = new Vector3(_horizontalPositionLimit, transform.position.y, 0);
         }
 
 
@@ -214,6 +226,7 @@ public class Enemy : MonoBehaviour
 
     private void DestroyEnemy()
     {
+        Debug.Log("Enemy::DestroyEnemy: enemyID=" + enemyID + " _enemyLaserBeam=" + _enemyLaserBeam);
         // Destory Big Laser first
         if (enemyID == 1 && _enemyLaserBeam != null)
         {
