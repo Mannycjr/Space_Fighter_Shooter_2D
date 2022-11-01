@@ -41,7 +41,7 @@ public class SpawnManager : MonoBehaviour
 
         _wideShotIndex = _powerUpsDowns.Length-1;
 
-        Debug.Log("SpawnManager::Start() Called. _stopSpawning=" + _stopSpawning.ToString() + " _wideShotIndex=" + _wideShotIndex);
+        //Debug.Log("SpawnManager::Start() Called. _stopSpawning=" + _stopSpawning.ToString() + " _wideShotIndex=" + _wideShotIndex);
 
         
     }
@@ -116,6 +116,13 @@ public class SpawnManager : MonoBehaviour
         Debug.Log("SpawnManager::spawnEnemyRoutine() Called");
         //yield return new WaitForSeconds(3.0f); // Initial wait at beginning of game
 
+        int _randomEnemyType = 1;
+
+        _randomEnemyType = Random.Range(0, 2);
+        if (_randomEnemyType == 2)
+        { _randomEnemyType = 1; }
+        Debug.Log("SpawnManager::spawnEnemyRoutine():_randomEnemyType="+ _randomEnemyType);
+
         while (!_stopSpawning)
         {
             for (int i = 0; i < _maxEnemies; i++)
@@ -128,7 +135,7 @@ public class SpawnManager : MonoBehaviour
                     float _randomX = Random.Range(-_xPositionLimit, _xPositionLimit);
                     _randomZangle = Random.Range(-45f,45f);
                     Vector3 spawnPosition = new Vector3(_randomX, _yPositionLimit, 0);
-                    GameObject newEnemy = Instantiate(_enemiesPrefabs[1], spawnPosition, Quaternion.Euler(0, 0, _randomZangle)); //
+                    GameObject newEnemy = Instantiate(_enemiesPrefabs[_randomEnemyType], spawnPosition, Quaternion.Euler(0, 0, _randomZangle)); //
                     _enemiesSpawned++;
                     newEnemy.transform.parent = _enemyContainer.transform;
                 }
